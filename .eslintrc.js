@@ -24,6 +24,7 @@ module.exports = {
     },
     // add your custom rules here
     'rules': {
+      "no-param-reassign": 0,
       // don't allow extra semicolons
       "semi": ["error", "never"],
       // don't require .vue extension when importing

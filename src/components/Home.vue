@@ -1,48 +1,54 @@
 <template>
-  <div class="content">
-    <div class="card-shadow">
-      <h4>{{ signIn }}</h4>
-      <div class="g-signin2"></div>
-    </div>
+  <div>
+    <section id="top" class="hero is-primary is-fullheight">
+      <div class="hero-body">
+        <div class="container has-text-centered">
+          <h1 class="title">
+            Schoolpool
+          </h1>
+          <h2 class="subtitle">
+            Subtitle
+          </h2>
+        </div>
+      </div>
+    </section>
+    
+    <section id="about" class="section is-large has-text-centered">
+      <div class="container">
+        <h1 class="title">About</h1>
+        <h2 class="subtitle">
+          A simple container to divide your page into <strong>sections</strong>, like the one you're currently reading
+        </h2>
+      </div>
+    </section>
+
+    <section id="services" class="section is-large has-text-centered">
+      <div class="container">
+        <h1 class="title">Services</h1>
+        <h2 class="subtitle">
+          A simple container to divide your page into <strong>sections</strong>, like the one you're currently reading
+        </h2>
+      </div>
+    </section>
+
+    <section id="contact" class="section is-large has-text-centered">
+      <div class="container">
+        <h1 class="title">Contact</h1>
+        <h2 class="subtitle">
+          A simple container to divide your page into <strong>sections</strong>, like the one you're currently reading
+        </h2>
+      </div>
+    </section>
   </div>
 </template>
 
 <script>
+
   export default {
-    data() {
-      return {
-        signIn: 'Sign in',
-      }
-    },
   }
+
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
-<style lang="scss" scoped>
-  .content {
-    background-image: url("../assets/background-image.jpeg");
-    background-repeat: no-repeat;
-    background-attachment: fixed;
-    background-position: center;
-    background-size: cover;
-  } 
-  // Reference: https://codepen.io/sdthornton/pen/wBZdXq
-  .card-shadow {
-    background: #fff;
-    border-radius: 2px;
-    height: 40%;
-    width: 50%;
-    padding: 5px;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  @media only screen and (max-width: 500px) {
-    .card-shadow {
-      width: 80%;
-    }
-  }
-
+<style lang="sass" scoped>
 </style>

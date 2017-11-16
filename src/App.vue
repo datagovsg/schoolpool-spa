@@ -1,37 +1,39 @@
 <template>
   <div id="app">
-    <b-navbar toggleable="md" type="dark" variant="dark" fixed="top">
-      <b-navbar-toggle target="nav_collapse"></b-navbar-toggle>
-      <b-navbar-brand href="#">schoolpool</b-navbar-brand>
-      <b-collapse is-nav id="nav_collapse">
-        <!-- Right aligned nav items -->
-        <b-navbar-nav class="ml-auto">
-          <b-navbar-nav>
-            <b-nav-item href="#">Link</b-nav-item>
-            <b-nav-item href="#" disabled>Disabled</b-nav-item>
-          </b-navbar-nav>
-        </b-navbar-nav>
-      </b-collapse>
-    </b-navbar>
-    <router-view/>
+    <AppNav></AppNav>
+    <router-view :auth="auth" :authenticated="authenticated">
+    </router-view>
+    <AppFooter></AppFooter>
   </div>
 </template>
 
 <script>
-  export default {
-    name: 'app',
-  }
+import AppNav from '../src/components/AppNav'
+import AppFooter from '../src/components/AppFooter'
+import AuthService from '../utils/AuthService'
+
+const auth = new AuthService()
+
+const { authenticated = false } = auth
+
+export default {
+  name: 'app',
+  components: {
+    AppNav,
+    AppFooter,
+  },
+  data() {
+    return {
+      auth,
+      authenticated,
+    }
+  },
+}
 
 </script>
 
-<style lang="scss">
-  #app {
-    font-family: $font-family;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-    text-align: center;
-    color: $black;
-    min-height: 100%;
-  }
+<style lang="sass">
+@import '../node_modules/bulma/bulma.sass'
+@import './style/mq'
 
 </style>

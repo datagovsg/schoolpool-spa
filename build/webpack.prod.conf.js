@@ -98,14 +98,14 @@ const webpackConfig = merge(baseWebpackConfig, {
         to: config.build.assetsSubDirectory,
         ignore: ['.*']
       }
-    ])
+    ]),
   ]
 })
 
 if (config.build.productionGzip) {
   const CompressionWebpackPlugin = require('compression-webpack-plugin')
 
-  webpackConfig.plugins.push(
+  webpackConfig.plugins.push( 
     new CompressionWebpackPlugin({
       asset: '[path].gz[query]',
       algorithm: 'gzip',
@@ -116,7 +116,7 @@ if (config.build.productionGzip) {
       ),
       threshold: 10240,
       minRatio: 0.8
-    })
+    }),
   )
 }
 
