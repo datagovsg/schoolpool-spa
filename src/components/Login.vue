@@ -9,19 +9,25 @@
     </b-container>
   </div> -->
   <section class="hero is-fullheight">
-        <div class="hero-body">
-          <div class="container">
-            <div class="columns is-centered">
-              <article class="card is-rounded">
-                <div class="card-content">
-                  <div class="field">
-                    <button v-if="!this.authenticated" class="button is-primary" @click="this.auth.login">Login</button>
-                    <button v-if="this.authenticated" class="button is-primary" @click="this.auth.logout">Logout</button>
-                  </div>
+    <div class="hero-body">
+      <div class="container">
+        <div class="columns is-centered">
+          <article class="card is-rounded">
+            <div class="card-content">
+              <div class="field">
+                <div v-if="this.auth.authenticated">
+                  <h4>You are logged in!</h4>
+                  <button class="button is-primary" @click="this.auth.logout">Logout</button>
                 </div>
-              </article>
+                <div v-if="!this.auth.authenticated">
+                  <h4>You are not logged in!</h4>
+                  <button class="button is-primary" @click="this.auth.login">Login</button>
+                </div>
+              </div>
             </div>
-          </div>
+          </article>
+        </div>
+      </div>
     </div>
   </section>
 </template>
@@ -30,12 +36,11 @@
   export default {
     name: 'home',
     // Essential in order for component to access parent properties
-    props: ['auth', 'authenticated'],
+    props: ['auth'],
     data() {
       this.auth.authNotifier.on('authChange', (authState) => {
         this.authenticated = authState.authenticated
       })
-      console.log(this.authenticated)
       return {}
     },
   }

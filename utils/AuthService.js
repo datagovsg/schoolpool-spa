@@ -48,7 +48,6 @@ export default class AuthService {
   }
 
   logout() {
-    console.log('triggered')
     // Clear access token and ID token from local storage
     localStorage.removeItem('access_token')
     localStorage.removeItem('id_token')
