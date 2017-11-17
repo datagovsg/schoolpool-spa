@@ -8,9 +8,9 @@
 
   export default {
     name: 'callback',
-    props: ['auth'],
     data() {
-      this.auth.handleAuthentication()
+      console.log(this.$route)
+      this.$parent.auth.handleAuthentication()
       return {}
     },
   }
