@@ -3,33 +3,42 @@ import Vuex from 'vuex'
 
 Vue.use(Vuex)
 
-// root state object.
-// each Vuex instance is just a single state tree.
-const state = {
-  auth0: null,
-}
-
-// mutations are operations that actually mutates the state.
-// each mutation handler gets the entire state tree as the
-// first argument, followed by additional payload arguments.
-// mutations must be synchronous and can be recorded by plugins
-// for debugging purposes.
-const mutations = {
-  setAuth0(s, payload) {
-    s.auth0 = payload
-  },
-}
-
-const getters = {
-  getAuth0(s) {
-    return s.auth0
-  },
-}
-
 // A Vuex instance is created by combining the state, mutations, actions,
 // and getters.
 export default new Vuex.Store({
-  state,
-  mutations,
-  getters,
+  state: {
+    isLogged: new Date().getTime() < JSON.parse(localStorage.getItem('expires_at')),
+  },
+  getters: {
+    isLoggedIn(state) {
+      return state.isLogged
+    },
+  },
+  mutations: {
+    LOGIN_PROFILE(state, status = true) {
+      state.isLogged = status
+    },
+    LOGOUT_PROFILE(state) {
+      state.isLogged = false
+    },
+  },
+  actions: {
+    login({ commit }, profile) {
+      return new Promise((resolve) => {
+        setTimeout(() => {
+          localStorage.setItem('profile', JSON.stringify(profile))
+          commit('LOGIN_PROFILE')
+          resolve()
+        }, 1000)
+      })
+    },
+    logout({ commit }) {
+      // Clear access token and ID token from local storage
+      localStorage.removeItem('access_token')
+      localStorage.removeItem('id_token')
+      localStorage.removeItem('expires_at')
+      localStorage.removeItem('profile')
+      commit('LOGOUT_PROFILE')
+    },
+  },
 })

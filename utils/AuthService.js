@@ -1,6 +1,7 @@
 import Auth0Lock from 'auth0-lock'
 import EventEmitter from 'EventEmitter'
 import router from '../src/router/index'
+import Store from '../src/store/index'
 
 export default class AuthService {
   constructor() {
@@ -36,16 +37,16 @@ export default class AuthService {
   handleAuthentication() {
     // Listening for the authenticated event
     this.lock.on('authenticated', (authResult) => {
-      console.log(authResult)
       // Use the token in authResult to getUserInfo() and save it to localStorage
-      this.lock.getUserInfo(authResult.accessToken, async (error, profile) => {
+      this.lock.getUserInfo(authResult.accessToken, (error, profile) => {
         if (error) {
           // Handle error
           return
         }
-        localStorage.setItem('profile', JSON.stringify(profile))
-        await this.setSession(authResult)
-        router.replace('home')
+        Store.dispatch('login', profile).then(async () => {
+          await this.setSession(authResult)
+          router.replace('home')
+        })
       })
     })
   }
@@ -60,13 +61,8 @@ export default class AuthService {
   }
 
   logout() {
-    // Clear access token and ID token from local storage
-    localStorage.removeItem('access_token')
-    localStorage.removeItem('id_token')
-    localStorage.removeItem('expires_at')
-    localStorage.removeItem('profile')
-    this.userProfile = null
     this.authNotifier.emit('authChange', false)
+    Store.dispatch('logout')
     // navigate to the home route
     router.replace('home')
   }
