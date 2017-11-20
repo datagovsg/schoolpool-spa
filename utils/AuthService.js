@@ -2,6 +2,7 @@ import Auth0Lock from 'auth0-lock'
 import EventEmitter from 'EventEmitter'
 import router from '../src/router/index'
 import Store from '../src/store/index'
+import Config from './config'
 
 export class AuthService {
   constructor() {
@@ -9,13 +10,13 @@ export class AuthService {
     this.authNotifier = new EventEmitter()
     // Initializing our Auth0Lock
     this.lock = new Auth0Lock(
-      '9cvkRePcJ9271Uo46NgwJjxJBPotOaHZ',
-      'schoolpool.auth0.com',
+      Config.auth0Lock.clientID,
+      Config.auth0Lock.domain,
       {
         oidcConformant: true,
         auth: {
-          redirectUrl: 'http://localhost:8080/callback',
-          audience: 'https://schoolpool.auth0.com/userinfo',
+          redirectUrl: Config.auth0Lock.callbackURL,
+          audience: Config.auth0Lock.audience,
           responseType: 'token id_token',
           // The specify the type of data is required from external service
           params: {
