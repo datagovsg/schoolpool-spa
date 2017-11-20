@@ -1,6 +1,10 @@
 <template>
   <div class="hero is-fullheight admin_container">
     <div class="container">
+        <div class="notification is-warning">
+          <button class="delete"></button>
+          You have not completed your <strong>registration!</strong> Navigate to <a>Profile Settings</a> to update your personal information.
+      </div>
       <div class="columns">
         <div class="column is-3">
           <aside class="menu">
@@ -46,7 +50,7 @@
               <div class="card events-card">
                 <header class="card-header">
                   <p class="card-header-title">
-                    Events
+                    Schedules
                   </p>
                   <a href="#" class="card-header-icon" aria-label="more options">
                     <span class="icon">
@@ -54,6 +58,40 @@
                     </span>
                   </a>
                 </header>
+                <div class="card-table">
+                  <div class="content">
+                    <table class="table is-fullwidth is-striped">
+                      <tbody>
+                        <tr>
+                          <td width="5%">
+                            <i class="fa fa-bell-o"></i>
+                          </td>
+                          <td>Lorum ipsum dolem aire</td>
+                          <td>
+                            <a class="button is-small is-primary" href="#">Action</a>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+                <div class="card-table">
+                  <div class="content">
+                    <table class="table is-fullwidth is-striped">
+                      <tbody>
+                        <tr>
+                          <td width="5%">
+                            <i class="fa fa-bell-o"></i>
+                          </td>
+                          <td>Lorum ipsum dolem aire</td>
+                          <td>
+                            <a class="button is-small is-primary" href="#">Action</a>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
                 <div class="card-table">
                   <div class="content">
                     <table class="table is-fullwidth is-striped">
@@ -112,33 +150,46 @@
 </template>
 
 <script>
-  export default {
-    computed: {
-      profile() {
-        return JSON.parse(localStorage.getItem('profile'))
-      },
-      currentDate() {
-        const today = new Date()
-        let dd = today.getDate()
-        let mm = today.getMonth() + 1 // January is 0!
-        const yyyy = today.getFullYear()
+import axios from 'axios'
 
-        if (dd < 10) {
-          dd = `0${dd}`
-        }
-
-        if (mm < 10) {
-          mm = `0${mm}`
-        }
-
-        return `${mm}/${dd}/${yyyy}`
-      },
+export default {
+  computed: {
+    profile() {
+      return JSON.parse(localStorage.getItem('profile'))
     },
-  }
+    currentDate() {
+      const today = new Date()
+      let dd = today.getDate()
+      let mm = today.getMonth() + 1 // January is 0!
+      const yyyy = today.getFullYear()
+
+      if (dd < 10) {
+        dd = `0${dd}`
+      }
+
+      if (mm < 10) {
+        mm = `0${mm}`
+      }
+
+      return `${mm}/${dd}/${yyyy}`
+    },
+  },
+  created() {
+    axios.get('http://jsonplaceholder.typicode.com/posts')
+      .then((response) => {
+      // JSON responses are automatically parsed.
+        this.posts = response.data
+      })
+      .catch((e) => {
+        this.errors.push(e)
+      })
+  },
+}
 
 </script>
 
 <style lang="sass" scoped>
+
   .admin_container
     background-color: #ecf0f1
     padding-top: 20px

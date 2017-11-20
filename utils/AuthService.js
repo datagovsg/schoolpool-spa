@@ -3,7 +3,7 @@ import EventEmitter from 'EventEmitter'
 import router from '../src/router/index'
 import Store from '../src/store/index'
 
-export default class AuthService {
+export class AuthService {
   constructor() {
     this.authenticated = AuthService.isAuthenticated()
     this.authNotifier = new EventEmitter()
@@ -72,5 +72,15 @@ export default class AuthService {
     // access token's expiry time
     const expiresAt = await JSON.parse(localStorage.getItem('expires_at'))
     return new Date().getTime() < expiresAt
+  }
+}
+
+export function requireAuth(to, from, next) {
+  if (!Store.getters.isLoggedIn) {
+    next({
+      path: '/',
+    })
+  } else {
+    next()
   }
 }
