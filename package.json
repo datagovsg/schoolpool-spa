@@ -15,7 +15,7 @@
   },
   "dependencies": {
     "EventEmitter": "^1.0.0",
-    "auth0-js": "file:node_modules/auth0-js",
+    "auth0-js": "^8.11.2",
     "auth0-lock": "^10.24.1",
     "axios": "^0.17.1",
     "bulma": "^0.6.1",

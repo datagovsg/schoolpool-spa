@@ -7,19 +7,19 @@ Vue.use(Vuex)
 // and getters.
 export default new Vuex.Store({
   state: {
-    isLogged: new Date().getTime() < JSON.parse(localStorage.getItem('expires_at')),
+    isLoggedIn: new Date().getTime() < JSON.parse(localStorage.getItem('expires_at')),
   },
   getters: {
     isLoggedIn(state) {
-      return state.isLogged
+      return state.isLoggedIn
     },
   },
   mutations: {
-    LOGIN_PROFILE(state, status = true) {
-      state.isLogged = status
+    LOGIN_PROFILE(state) {
+      state.isLoggedIn = true
     },
     LOGOUT_PROFILE(state) {
-      state.isLogged = false
+      state.isLoggedIn = false
     },
   },
   actions: {
