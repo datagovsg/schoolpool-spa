@@ -7,7 +7,7 @@ Vue.use(Vuex)
 // and getters.
 export default new Vuex.Store({
   state: {
-    isLogged: !!localStorage.getItem('profile'),
+    isLogged: new Date().getTime() < JSON.parse(localStorage.getItem('expires_at')),
   },
   getters: {
     isLoggedIn(state) {
