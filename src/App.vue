@@ -1,8 +1,7 @@
 <template>
-  <div id="app">
+  <div id="app" :auth="auth">
     <AppNav></AppNav>
-    <router-view :auth="auth" :authenticated="authenticated">
-    </router-view>
+    <router-view />
     <AppFooter></AppFooter>
   </div>
 </template>
@@ -14,8 +13,6 @@ import AuthService from '../utils/AuthService'
 
 const auth = new AuthService()
 
-const { authenticated = false } = auth
-
 export default {
   name: 'app',
   components: {
@@ -25,7 +22,6 @@ export default {
   data() {
     return {
       auth,
-      authenticated,
     }
   },
 }
