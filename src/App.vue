@@ -2,14 +2,14 @@
   <div id="app" :auth="auth">
     <AppNav></AppNav>
     <router-view />
-    <AppFooter></AppFooter>
+    <AppFooter v-if="!isActive"></AppFooter>
   </div>
 </template>
 
 <script>
 import AppNav from '../src/components/AppNav'
 import AppFooter from '../src/components/AppFooter'
-import AuthService from '../utils/AuthService'
+import { AuthService } from '../utils/AuthService'
 
 const auth = new AuthService()
 
@@ -23,6 +23,11 @@ export default {
     return {
       auth,
     }
+  },
+  computed: {
+    isActive() {
+      return this.$route.name === 'Dashboard'
+    },
   },
 }
 

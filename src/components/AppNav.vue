@@ -27,7 +27,7 @@
             <a class="navbar-item" href="#contact">
               Contact
             </a>
-            <button @click="login()" :disabled="!disabled" class="button is-primary is-outlined">
+            <button @click="login()" :disabled="!disabled" class="button is-primary">
               <span class="icon">
                 <i class="fa fa-sign-in" aria-hidden="true"></i>
               </span>
@@ -37,7 +37,7 @@
         </div>
         <div v-if="isLoggedIn">
           <div class="navbar-item">
-            <button @click="logout()" class="button is-primary is-outlined">
+            <button @click="logout()" class="button is-info is-outlined">
               <span class="icon">
                 <i class="fa fa-sign-out" aria-hidden="true"></i>
               </span>
