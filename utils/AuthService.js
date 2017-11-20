@@ -45,7 +45,7 @@ export default class AuthService {
         }
         Store.dispatch('login', profile).then(async () => {
           await this.setSession(authResult)
-          router.replace('home')
+          router.replace('dashboard')
         })
       })
     })

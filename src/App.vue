@@ -2,7 +2,7 @@
   <div id="app" :auth="auth">
     <AppNav></AppNav>
     <router-view />
-    <AppFooter></AppFooter>
+    <AppFooter v-if="!isActive"></AppFooter>
   </div>
 </template>
 
@@ -23,6 +23,11 @@ export default {
     return {
       auth,
     }
+  },
+  computed: {
+    isActive() {
+      return this.$route.name === 'Dashboard'
+    },
   },
 }
 
