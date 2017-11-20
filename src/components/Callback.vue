@@ -9,7 +9,6 @@
   export default {
     name: 'callback',
     data() {
-      console.log(this.$route)
       this.$parent.auth.handleAuthentication()
       return {}
     },
