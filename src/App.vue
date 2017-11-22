@@ -26,7 +26,7 @@ export default {
   },
   computed: {
     isActive() {
-      return this.$route.name === 'Dashboard'
+      return this.$route.path.includes('dashboard')
     },
   },
 }
