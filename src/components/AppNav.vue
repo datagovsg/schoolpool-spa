@@ -16,17 +16,17 @@
       </div>
 
       <div class="navbar-end">
-        <div v-if="!isLoggedIn">
-          <div class="navbar-item">
-            <a class="navbar-item" href="#about">
-              About
-            </a>
-            <a class="navbar-item" href="#services">
-              Services
-            </a>
-            <a class="navbar-item" href="#contact">
-              Contact
-            </a>
+        <div class="navbar-item">
+          <a class="navbar-item" href="#about">
+            About
+          </a>
+          <a class="navbar-item" href="#services">
+            Services
+          </a>
+          <a class="navbar-item" href="#contact">
+            Contact
+          </a>
+          <div v-if="!isLoggedIn">
             <button @click="login()" :disabled="!disabled" class="button is-primary">
               <span class="icon">
                 <i class="fa fa-sign-in" aria-hidden="true"></i>
@@ -34,9 +34,7 @@
               <span>Login</span>
             </button>
           </div>
-        </div>
-        <div v-if="isLoggedIn">
-          <div class="navbar-item">
+          <div v-if="isLoggedIn">
             <button @click="logout()" class="button is-info is-outlined">
               <span class="icon">
                 <i class="fa fa-sign-out" aria-hidden="true"></i>

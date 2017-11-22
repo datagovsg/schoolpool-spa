@@ -1,6 +1,6 @@
 <template>
   <div id="app" :auth="auth">
-    <AppNav></AppNav>
+    <AppNav v-if="!isActive"></AppNav>
     <router-view />
     <AppFooter v-if="!isActive"></AppFooter>
   </div>
