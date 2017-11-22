@@ -15,7 +15,7 @@
   }
 </script>
 
-<style <style lang="sass" scoped>
+<style lang="sass" scoped>
   .spinner 
     position: absolute
     display: flex

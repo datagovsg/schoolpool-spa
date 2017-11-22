@@ -1,11 +1,19 @@
 <template>
   <div class="hero is-fullheight admin-controller">
     <div class="container">
+      <div class="columns" v-if="isActive">
+        <div class="column is-12">
+          <div class="notification is-warning">
+            <button class="delete"></button> Please navigate to
+            <a>Profile Settings</a> to update your personal information
+          </div>
+        </div>
+      </div>
       <div class="columns is-mobile">
         <div id="nav"  class="side-nav column is-3">
           <aside class="menu">
             <figure class="profile-image">
-                <img src="https://loremflickr.com/128/128" />
+                <img v-bind:src="profile.picture" />
             </figure>
             <br>
             <ul class="menu-list" ref="navigationArray">
@@ -37,6 +45,7 @@
   import axios from 'axios'
   import Dashboard from './Default'
   import Settings from './Settings'
+  import Config from '../../utils/config'
 
   export default {
     components: {
@@ -57,16 +66,14 @@
     computed: {
       // Pass data to respective child components: Reference: https://stackoverflow.com/questions/43658481/passing-props-dynamically-to-dynamic-component-in-vuejs
       currentProperties() {
-        if (this.currentComponent === 'Dashboard') {
-          return JSON.parse(localStorage.getItem('profile'))
-        }
-        return {}
+        return this.profile
       },
     },
     data() {
       return {
         componentsArray: ['Dashboard', 'Settings'],
         currentComponent: 'Dashboard',
+        isActive: false,
       }
     },
     created() {
@@ -74,13 +81,20 @@
         auth = {},
       } = this.$parent
       this.auth = auth
-      axios.get('http://jsonplaceholder.typicode.com/posts')
+      this.profile = JSON.parse(localStorage.getItem('profile'))
+      axios.get(`${Config.serverURL}/users`, {
+        token: localStorage.getItem('id_token'),
+        'Access-Control-Allow-Origin': '*',
+      })
         .then((response) => {
           // JSON responses are automatically parsed.
-          this.posts = response.data
+          const { data } = response
+          console.log(data)
         })
         .catch((e) => {
-          this.errors.push(e)
+          if (e.response.status === 401) {
+            this.isActive = !this.isActive
+          }
         })
     },
   }

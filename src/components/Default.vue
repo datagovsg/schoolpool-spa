@@ -16,14 +16,6 @@
         </section>
       </div>
     </div>
-    <div class="columns">
-      <div class="column is-12">
-        <div class="notification is-warning">
-          <button class="delete"></button> Please navigate to
-          <a>Profile Settings</a> to update your personal information
-        </div>
-      </div>
-    </div>
     <div class="columns card_container">
       <div class="column is-6">
         <div class="card events-card">
@@ -45,41 +37,7 @@
                     <td width="5%">
                       <i class="fa fa-bell-o"></i>
                     </td>
-                    <td>Lorum ipsum dolem aire</td>
-                    <td>
-                      <a class="button is-small is-primary" href="#">Action</a>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-          <div class="card-table">
-            <div class="content">
-              <table class="table is-fullwidth is-striped">
-                <tbody>
-                  <tr>
-                    <td width="5%">
-                      <i class="fa fa-bell-o"></i>
-                    </td>
-                    <td>Lorum ipsum dolem aire</td>
-                    <td>
-                      <a class="button is-small is-primary" href="#">Action</a>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-          <div class="card-table">
-            <div class="content">
-              <table class="table is-fullwidth is-striped">
-                <tbody>
-                  <tr>
-                    <td width="5%">
-                      <i class="fa fa-bell-o"></i>
-                    </td>
-                    <td>Lorum ipsum dolem aire</td>
+                    <td>Fetch John Smith's children to <strong>Anderson Secondary School</strong></td>
                     <td>
                       <a class="button is-small is-primary" href="#">Action</a>
                     </td>
