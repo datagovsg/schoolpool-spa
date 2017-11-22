@@ -127,7 +127,6 @@
 
 <script>
 export default {
-  props: ['profile'],
   computed: {
     currentDate() {
       const today = new Date()
@@ -145,6 +144,10 @@ export default {
 
       return `${mm}/${dd}/${yyyy}`
     },
+  },
+  data() {
+    this.profile = this.$attrs
+    return {}
   },
 }
 </script>

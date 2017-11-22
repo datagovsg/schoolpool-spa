@@ -3,7 +3,6 @@ import Router from 'vue-router'
 import Home from '@/components/Home'
 import Callback from '@/components/Callback'
 import Dashboard from '@/components/Dashboard'
-import Settings from '@/components/Settings'
 import { requireAuth } from '../../utils/AuthService'
 
 Vue.use(Router)
@@ -33,15 +32,10 @@ export default new Router({
       name: 'Dashboard',
       component: Dashboard,
       beforeEnter: requireAuth,
-      children: [
-        { path: '/', component: Settings },
-
-        // ...other sub routes
-      ],
     },
-    // {
-    //   path: '*',
-    //   redirect: '/home',
-    // },
+    {
+      path: '*',
+      redirect: '/home',
+    },
   ],
 })
