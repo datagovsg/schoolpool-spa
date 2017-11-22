@@ -20,7 +20,7 @@ export class AuthService {
           responseType: 'token id_token',
           // The specify the type of data is required from external service
           params: {
-            scope: 'openid profile',
+            scope: 'openid profile email',
           },
         },
       },
