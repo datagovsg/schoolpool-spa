@@ -1,7 +1,7 @@
 <template>
   <div class="hero is-fullheight admin_container">
     <div class="container">
-        <div class="notification is-warning">
+      <div class="notification is-warning">
           <button class="delete"></button>
           You have not completed your <strong>registration!</strong> Navigate to <a>Profile Settings</a> to update your personal information.
       </div>

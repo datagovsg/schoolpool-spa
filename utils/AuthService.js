@@ -77,6 +77,7 @@ export class AuthService {
 }
 
 export function requireAuth(to, from, next) {
+  console.log(Store.getters.isLoggedIn)
   if (!Store.getters.isLoggedIn) {
     next({
       path: '/',

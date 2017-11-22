@@ -26,6 +26,7 @@ export default {
   },
   computed: {
     isActive() {
+      console.log(this.$route)
       return this.$route.name === 'Dashboard'
     },
   },
