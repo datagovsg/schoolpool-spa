@@ -1,5 +1,5 @@
 <template>
-  <div class="hero is-fullheight admin-controller">
+  <div class="section is-large admin-controller">
     <div class="container">
       <div class="columns" v-if="isActive">
         <div class="column is-12">

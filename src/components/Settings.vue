@@ -50,28 +50,23 @@
                 </span>
               </p>
             </div>
-            <div class="field is-grouped">
-              <p class="control is-expanded has-icons-left">
-                <input class="input" type="email" placeholder="School">
-                <span class="icon is-small is-left">
-                  <i class="fa fa-graduation-cap" aria-hidden="true"></i>
-                </span>
-              </p>
+            <div class="field is-grouped has-addons">
+              <div class="control is-expanded has-icons-left">
+                <AutoComplete :suggestions="schools" v-model="school" @interface="selectedSchool = $event"></AutoComplete>
+              </div>
               <div class="control">
-                <div class="select">
+                <span class="select is-fullwidth">
                   <select>
-                    <option>Number of children</option>
-                    <option>------------------</option>
                     <option>1</option>
                     <option>2</option>
                     <option>3</option>
                   </select>
-                </div>
+                </span>
               </div>
             </div>
             <div class="field">
               <div class="control has-icons-left">
-                <input class="input" type="text" placeholder="Address">
+                <input class="input" type="search" placeholder="Address">
                 <span class="icon is-small is-left">
                   <i class="fa fa-map-marker" aria-hidden="true"></i>
                 </span>
@@ -85,11 +80,48 @@
 </template>
 
 <script>
+  import axios from 'axios'
+  import _ from 'lodash'
   import GoogleMaps from './GoogleMaps'
+  import Config from '../../utils/config'
+  import AutoComplete from './AutoComplete'
 
   export default {
     components: {
       GoogleMaps,
+      AutoComplete,
+    },
+    watch: {
+      // whenever question changes, this function will run
+      school() {
+        this.fetchSchools()
+      },
+    },
+    methods: {
+      fetchSchools: _.debounce(function getSchools() {
+        if (this.school.trim() === '') {
+          this.schools = []
+          return
+        }
+        const { govData = {} } = Config
+        const vm = this
+        axios.get(`${govData.serverURL}?resource_id=${govData.schoolEndpoint}&q=${this.school}`)
+          .then((response) => {
+            // JSON responses are automatically parsed.
+            const { records } = response.data.result
+            vm.schools = records
+          })
+          .catch((e) => {
+            console.log(e.response)
+          })
+      }, 100),
+    },
+    data() {
+      return {
+        selectedSchool: null,
+        school: '',
+        schools: [],
+      }
     },
     created() {
       this.profile = this.$attrs
@@ -99,7 +131,5 @@
 </script>
 
 <style lang="sass" scoped>
-  GoogleMaps
-    height: 250px
 
 </style>
