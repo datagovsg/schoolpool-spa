@@ -36,5 +36,6 @@ export default {
 <style lang="sass">
 @import '../node_modules/bulma/bulma.sass'
 @import './style/mq'
+@import './style/responsive'
 
 </style>
