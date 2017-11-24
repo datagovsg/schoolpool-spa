@@ -1,14 +1,6 @@
 <template>
   <div class="section admin-controller full-height">
     <div class="container">
-      <div class="columns" v-if="isActive">
-        <div class="column is-12">
-          <div class="notification is-warning">
-            <button class="delete"></button> Please navigate to
-            <a>Profile Settings</a> to update your personal information
-          </div>
-        </div>
-      </div>
       <div class="columns is-mobile">
         <div id="nav" class="side-nav column is-3">
           <aside class="menu">
