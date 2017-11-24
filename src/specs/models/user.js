@@ -1,4 +1,4 @@
-// Food is a base class
+// Class construction. Reference: https://scotch.io/tutorials/better-javascript-with-es6-pt-ii-a-deep-dive-into-classes
 class User {
   constructor(phoneNumber, name, address, latitude, longitude, schoolAddress) {
     this.phoneNumber = phoneNumber

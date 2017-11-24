@@ -2,7 +2,7 @@
   <div class="section admin-controller full-height">
     <div class="container">
       <div class="columns is-mobile">
-        <div id="nav" class="side-nav column is-3">
+        <div id="nav" class="side-nav column is-2">
           <aside class="menu">
             <figure class="profile-image">
                 <img :src="profile.picture" />
@@ -22,8 +22,8 @@
             </ul>
           </aside>
         </div>
-        <div class="side-nav column is-3"></div>
-        <div class="column is-9">
+        <div class="side-nav column is-2"></div>
+        <div class="column is-10">
           <div class="columns" v-if="isActive">
             <div class="column is-12">
               <div class="notification is-warning">

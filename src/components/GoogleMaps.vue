@@ -1,6 +1,16 @@
 <template>
   <div>
-    <gmap-map :center="{lat:1.3521, lng:103.8198}" :zoom="14" map-type-id="roadmap" class="google-maps"></gmap-map>
+    <gmap-map :center="this.center" :zoom="10" map-type-id="roadmap" class="google-maps">
+      <gmap-marker
+        :key="index"
+        v-for="(m, index) in this.markers"
+        :position="m.position"
+        :clickable="true"
+        :draggable="true"
+        @click="center=m.position"
+      >
+      </gmap-marker>
+    </gmap-map>
   </div>
 </template>
 
@@ -18,6 +28,16 @@
   })
 
   export default {
+    props: {
+      markers: {
+        type: Array,
+        required: true,
+      },
+      center: {
+        type: Object,
+        required: true,
+      },
+    },
     data() {
       return {}
     },

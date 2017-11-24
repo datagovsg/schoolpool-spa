@@ -15,9 +15,7 @@ const axiosApi = (url, endPoint, payload = {}, operation = 'GET', headerParams =
        * Source: https://stackoverflow.com/questions/11480769/how-can-i-check-if-a-json-is-empty-in-nodejs
        */
       ...(Object.keys(payload).length !== 0 ? {
-        body: JSON.stringify({
-          ...payload,
-        }),
+        data: payload,
       } : null),
     })
 

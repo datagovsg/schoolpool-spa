@@ -3,7 +3,7 @@
     <div class="column">
       <div class="columns">
         <div class="column is-12">
-          <GoogleMaps></GoogleMaps>
+          <GoogleMaps :center="center" :markers="markers"></GoogleMaps>
         </div>
       </div>
       <div class="columns">
@@ -42,7 +42,7 @@
             <div class="field is-grouped has-addons">
               <div class="control is-expanded has-icons-left">
                 <label class="label">School</label>
-                <auto-complete placeholder="S. by name/region" :suggestions="schools" v-model="school" @interface="selectedSchool = $event"></auto-complete>
+                <auto-complete placeholder="S. by name/region" :suggestions="schools" v-model="school" @interface="getSelectedSchoolData($event)"></auto-complete>
               </div>
               <div class="control">
                 <label class="label">Children</label>
@@ -117,20 +117,52 @@
         // console.log(this.phoneNumber)
         // console.log(this.selectedSchool.postal_code)
         // console.log(this.address)
-        const { placeResultData = {}, addressData = {} } = this.address
-        const user = new User(
-          this.phoneNumber,
-          this.profile.name,
-          placeResultData.formatted_address,
-          addressData.latitude,
-          addressData.longitude,
-          [this.selectedSchool.postal_code],
-        )
-        UserSession.default(user, localStorage.getItem('id_token')).then((response) => {
-          console.log(response)
+        if (this.address !== undefined) {
+          const { placeResultData = {}, addressData = {} } = this.address
+          const user = new User(
+            this.phoneNumber,
+            this.profile.name,
+            placeResultData.formatted_address,
+            addressData.latitude,
+            addressData.longitude,
+            [this.selectedSchool.postal_code],
+          )
+          UserSession.register(user, localStorage.getItem('id_token')).then((response) => {
+            console.log(response)
+          }).catch((error) => {
+            console.log(error.response)
+          })
+        }
+      },
+      addMarker(name) {
+        UserSession.locate(this.selectedSchool.postal_code).then((response) => {
+          const { location = {} } = response.data.results[0].geometry
+          this.markers.push({
+            position: location,
+            name,
+          })
         }).catch((error) => {
-          console.log(error)
+          console.log(error.response)
         })
+      },
+      removeMarker(name) {
+        let index = 0
+        for (let i = 0; i < this.markers.length; i++) {
+          if (this.markers[i].name === name) {
+            index = i
+            break
+          }
+        }
+        this.markers.splice(index, 1)
+      },
+      getSelectedSchoolData(event) {
+        this.selectedSchool = event
+        // Check if selected school is defined
+        if (this.selectedSchool !== undefined && this.selectedSchool !== null) {
+          this.addMarker()
+        } else {
+          this.removeMarker()
+        }
       },
       getAddressData(addressData, placeResultData) {
         this.address = {
@@ -159,6 +191,8 @@
         school: '',
         schools: [],
         phoneNumber: null,
+        center: { lat: 1.3521, lng: 103.8198 },
+        markers: [],
       }
     },
     created() {
