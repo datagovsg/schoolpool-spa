@@ -38,9 +38,6 @@
                       <i class="fa fa-bell-o"></i>
                     </td>
                     <td>Fetch John Smith's children to <strong>Anderson Secondary School</strong></td>
-                    <td>
-                      <a class="button is-small is-primary" href="#">Action</a>
-                    </td>
                   </tr>
                 </tbody>
               </table>

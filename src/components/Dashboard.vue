@@ -1,5 +1,5 @@
 <template>
-  <div class="section is-large admin-controller">
+  <div class="section admin-controller full-height">
     <div class="container">
       <div class="columns" v-if="isActive">
         <div class="column is-12">
@@ -10,22 +10,21 @@
         </div>
       </div>
       <div class="columns is-mobile">
-        <div id="nav"  class="side-nav column is-3">
+        <div id="nav" class="side-nav column is-3">
           <aside class="menu">
             <figure class="profile-image">
-                <img v-bind:src="profile.picture" />
+                <img :src="profile.picture" />
             </figure>
             <br>
             <ul class="menu-list" ref="navigationArray">
-              <li v-for="(component, key) in componentsArray" :key="component">
+              <li v-for="(component, key) in componentsArray" :key="component.name">
                 <!-- Render registered components from list. Reference: https://forum.vuejs.org/t/how-to-make-a-component-with-menu-item-changing-css-to-active-when-clicked/3235/2 -->
                 <a class="desktop-link" href="#" @click.prevent="swapComponent(component)" :class="{ 'is-active': isSelected(component) }">
-                  <span>{{ component }}</span>
-                  <i class="fa fa-address-book fa-lg component-icon" aria-hidden="true"></i>
+                  <span>{{ component.name }}</span>
+                  <i :class="component.icon" aria-hidden="true"></i>
                 </a>
               </li>
               <li @click="logout()" id="logout-btn">
-                <i class="fa fa-sign-out" aria-hidden="true"></i>
                 <span >Logout</span>
               </li>
             </ul>
@@ -33,8 +32,16 @@
         </div>
         <div class="side-nav column is-3"></div>
         <div class="column is-9">
+          <div class="columns" v-if="isActive">
+            <div class="column is-12">
+              <div class="notification is-warning">
+                <button class="delete"></button> Please navigate to
+                <a>Profile Settings</a> to update your personal information
+              </div>
+            </div>
+          </div>
           <!-- Conditional rendering of component. Reference: http://jsbin.com/miwuduliyu/edit?html,js,console,output -->
-          <div :is="currentComponent" v-bind="currentProperties"></div>
+          <div :is="currentComponent !== null ? currentComponent.name : 'Dashboard'" v-bind="currentProperties"></div>
         </div>
       </div>
     </div>
@@ -45,7 +52,7 @@
   import axios from 'axios'
   import Dashboard from './Default'
   import Settings from './Settings'
-  import Config from '../../utils/config'
+  import Config from '../specs/config'
 
   export default {
     components: {
@@ -60,7 +67,12 @@
         this.currentComponent = component
       },
       isSelected(component) {
-        return this.currentComponent === component
+        if (this.currentComponent !== null) {
+          return this.currentComponent === component
+        } else if (component.name === 'Dashboard') {
+          return true
+        }
+        return false
       },
     },
     computed: {
@@ -71,8 +83,8 @@
     },
     data() {
       return {
-        componentsArray: ['Dashboard', 'Settings'],
-        currentComponent: 'Dashboard',
+        componentsArray: [{ name: 'Dashboard', icon: 'fa fa-bar-chart fa-lg component-icon' }, { name: 'Settings', icon: 'fa fa-cog fa-lg component-icon' }],
+        currentComponent: null,
         isActive: false,
       }
     },
@@ -84,7 +96,6 @@
       this.profile = JSON.parse(localStorage.getItem('profile'))
       axios.get(`${Config.serverURL}/users`, {
         token: localStorage.getItem('id_token'),
-        'Access-Control-Allow-Origin': '*',
       })
         .then((response) => {
           // JSON responses are automatically parsed.
@@ -103,10 +114,6 @@
 
 <style lang="sass" scoped>
 
-  .profile-image
-    text-align: center
-  .profile-image img
-    border-radius: 100%
   .admin-controller
     background-color: #ecf0f1
     padding-top: 20px 
@@ -114,5 +121,7 @@
     margin: 20px auto 
   .menu-list li a 
     font-weight: 500
+  .full-height 
+    min-height: 100vh
 
 </style>

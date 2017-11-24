@@ -7,7 +7,7 @@
 <script>
   import Vue from 'vue'
   import * as VueGoogleMaps from 'vue2-google-maps'
-  import Config from '../../utils/config'
+  import Config from '../specs/config'
 
   Vue.use(VueGoogleMaps, {
     load: {
@@ -26,6 +26,6 @@
 
 <style lang="sass" scoped>
   .google-maps
-    height: 350px
+    height: 250px
 </style>
 

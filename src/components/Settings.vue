@@ -8,53 +8,44 @@
       </div>
       <div class="columns">
         <div class="column is-6">
-          <div class="card">
-            <div class="card-content">
-              <div class="media">
-                <div class="media-left">
-                  <figure class="image is-48x48">
-                    <img src="https://bulma.io/images/placeholders/96x96.png" alt="Placeholder image">
-                  </figure>
-                </div>
-                <div class="media-content">
-                  <p class="title is-4">John Smith</p>
-                  <p class="subtitle is-6">
-                  </p>
-                </div>
-              </div>
-              <div class="content">
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus nec iaculis mauris.
-                <br>
-              </div>
-            </div>
-            <footer class="card-footer">
-              <a href="#" class="card-footer-item">Edit</a>
-              <a href="#" class="card-footer-item">Delete</a>
-            </footer>
-          </div>
-        </div>
-        <div class="column is-6">
-          <form>
+          <form @submit.prevent="onSubmit">
             <!-- Input grouping. Reference: https://bulma.io/2017/03/10/new-field-element/ -->
-            <div class="field is-grouped">
+            <div class="field">
               <p class="control is-expanded has-icons-left">
-                <input class="input" type="email" placeholder="Email">
+                <input class="input" disabled type="email" :placeholder="profile.email">
                 <span class="icon is-small is-left">
                   <i class="fa fa-envelope"></i>
                 </span>
               </p>
-              <p class="control is-expanded has-icons-left">
-                <input class="input" type="number" placeholder="Mobile No.">
-                <span class="icon is-small is-left">
+            </div>
+            <div class="field has-addons">
+              <p class="control">
+                <a class="button is-static">
                   +65
-                </span>
+                </a>
+              </p>
+              <p class="control is-expanded">
+                <input class="input" v-model="phoneNumber" type="number" placeholder="Mobile no.">
+              </p>
+            </div>
+            <div class="field">
+              <p class="control">
+                <vue-google-autocomplete
+                  id="map"
+                  classname="input"
+                  placeholder="Address"
+                  v-on:placechanged="getAddressData"
+                >
+                </vue-google-autocomplete>
               </p>
             </div>
             <div class="field is-grouped has-addons">
               <div class="control is-expanded has-icons-left">
-                <AutoComplete :suggestions="schools" v-model="school" @interface="selectedSchool = $event"></AutoComplete>
+                <label class="label">School</label>
+                <auto-complete placeholder="S. by name/region" :suggestions="schools" v-model="school" @interface="selectedSchool = $event"></auto-complete>
               </div>
               <div class="control">
+                <label class="label">Children</label>
                 <span class="select is-fullwidth">
                   <select>
                     <option>1</option>
@@ -64,15 +55,33 @@
                 </span>
               </div>
             </div>
-            <div class="field">
-              <div class="control has-icons-left">
-                <input class="input" type="search" placeholder="Address">
-                <span class="icon is-small is-left">
-                  <i class="fa fa-map-marker" aria-hidden="true"></i>
-                </span>
+            <div class="field is-grouped is-grouped-right">
+              <div class="control">
+                <button class="button is-primary">Save</button>
               </div>
             </div>
           </form>
+        </div>
+        <div class="column is-6">
+          <div class="card">
+            <div class="card-content">
+              <div class="media">
+                <div class="media-left">
+                  <figure class="image is-48x48 profile-image">
+                    <img :src="profile.picture" alt="Placeholder image">
+                  </figure>
+                </div>
+                <div class="media-content">
+                  <p class="title is-4">{{profile.name}}</p>
+                  <p class="subtitle is-6">{{profile.email}}</p>
+                </div>
+              </div>
+              <div class="content">
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus nec iaculis mauris.
+                <br>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -80,16 +89,22 @@
 </template>
 
 <script>
-  import axios from 'axios'
+  // import axios from 'axios'
   import _ from 'lodash'
+  import VueGoogleAutocomplete from 'vue-google-autocomplete'
+
   import GoogleMaps from './GoogleMaps'
-  import Config from '../../utils/config'
   import AutoComplete from './AutoComplete'
 
+  import * as UserSession from '../specs/sessions/user'
+  import * as SchoolSession from '../specs/sessions/school'
+  import User from '../specs/models/user'
+  
   export default {
     components: {
       GoogleMaps,
       AutoComplete,
+      VueGoogleAutocomplete,
     },
     watch: {
       // whenever question changes, this function will run
@@ -98,29 +113,52 @@
       },
     },
     methods: {
+      onSubmit() {
+        // console.log(this.phoneNumber)
+        // console.log(this.selectedSchool.postal_code)
+        // console.log(this.address)
+        const { placeResultData = {}, addressData = {} } = this.address
+        const user = new User(
+          this.phoneNumber,
+          this.profile.name,
+          placeResultData.formatted_address,
+          addressData.latitude,
+          addressData.longitude,
+          [this.selectedSchool.postal_code],
+        )
+        UserSession.default(user, localStorage.getItem('id_token')).then((response) => {
+          console.log(response)
+        }).catch((error) => {
+          console.log(error)
+        })
+      },
+      getAddressData(addressData, placeResultData) {
+        this.address = {
+          placeResultData,
+          addressData,
+        }
+      },
       fetchSchools: _.debounce(function getSchools() {
         if (this.school.trim() === '') {
           this.schools = []
           return
         }
-        const { govData = {} } = Config
         const vm = this
-        axios.get(`${govData.serverURL}?resource_id=${govData.schoolEndpoint}&q=${this.school}`)
-          .then((response) => {
-            // JSON responses are automatically parsed.
-            const { records } = response.data.result
-            vm.schools = records
-          })
-          .catch((e) => {
-            console.log(e.response)
-          })
-      }, 100),
+        SchoolSession.default(this.school).then((response) => {
+          // JSON responses are automatically parsed.
+          const { records = {} } = response.data.result
+          vm.schools = records
+        }).catch((error) => {
+          console.log(error.response)
+        })
+      }, 500),
     },
     data() {
       return {
         selectedSchool: null,
         school: '',
         schools: [],
+        phoneNumber: null,
       }
     },
     created() {

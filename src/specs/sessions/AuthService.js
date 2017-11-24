@@ -1,8 +1,8 @@
 import Auth0Lock from 'auth0-lock'
 import EventEmitter from 'EventEmitter'
-import router from '../src/router/index'
-import Store from '../src/store/index'
-import Config from './config'
+import router from '../../router/index'
+import Store from '../../store/index'
+import Config from '../config'
 
 export class AuthService {
   constructor() {

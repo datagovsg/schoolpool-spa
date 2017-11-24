@@ -1,7 +1,7 @@
 <template>
   <div class="control is-expanded has-icons-left">
-    <input class="input" type="text" placeholder="School" :value="value" @input="updateValue($event.target.value)" @keydown.enter='enter'
-      @keydown.down='down' @keydown.up='up'>
+    <input id="input-box" class="input" autocomplete="off" type="text" :placeholder="placeholder" :value="value" @input="updateValue($event.target.value)" @keydown.enter='enter'
+      @keydown.down='down' @keydown.up='up' @blur="onBlur">
     <span class="icon is-small is-left">
       <i class="fa fa-graduation-cap" aria-hidden="true"></i>
     </span>
@@ -15,7 +15,7 @@
 
 <script>
   export default {
-
+    // Reference: http://fareez.info/blog/vuejs/create-your-own-autocomplete-using-vuejs-2/
     props: {
       value: {
         type: String,
@@ -24,6 +24,10 @@
       suggestions: {
         type: Array,
         required: true,
+      },
+      placeholder: {
+        type: String,
+        required: false,
       },
     },
 
@@ -37,8 +41,7 @@
     computed: {
       // Filtering the suggestion based on the input
       matches() {
-        return this.suggestions.filter(obj =>
-          obj.school_name.toLowerCase().includes(this.value.toLowerCase()) >= 0)
+        return this.suggestions
       },
 
       openSuggestion() {
@@ -47,7 +50,6 @@
     },
 
     methods: {
-
       // Triggered the input event to cascade the updates to
       // parent component
       updateValue(value) {
@@ -55,8 +57,8 @@
           this.open = true
           this.current = 0
         }
-        this.$emit('input', value)
         this.$emit('interface', value.trim() === '' ? null : this.matches[this.current])
+        this.$emit('input', value)
       },
       // When enter key pressed on the input
       enter() {
@@ -79,6 +81,10 @@
         if (this.current < this.matches.length - 1) {
           this.current += 1
         }
+      },
+
+      onBlur() {
+        this.$emit('blur')
       },
 
       // For highlighting element
@@ -104,15 +110,16 @@
   .dropdown-list
     z-index: 10
     width: 100%
-    max-height: 150px
+    max-height: 90px
     position: absolute
     background-color: white
     overflow: hidden
     overflow-y: scroll
   .dropdown-list li
-    border: 1px solid #ccc
-  .dropdown-list,
-  .dropdown-list li:last-child
-    border-radius: 0 0 5px 5px
+    border-bottom: 0.2px solid rgb(230, 230, 230)
+    line-height: 20px
+  .dropdown-list li a
+    font-size: 0.7em !important
+    font-weight: 500
 
 </style>
