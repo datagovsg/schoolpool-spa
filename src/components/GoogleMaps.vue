@@ -5,9 +5,8 @@
         :key="index"
         v-for="(m, index) in this.markers"
         :position="m.position"
-        :clickable="true"
-        :draggable="true"
-        @click="center=m.position"
+        :clickable="false"
+        :draggable="false"
       >
       </gmap-marker>
     </gmap-map>

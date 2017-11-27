@@ -3,6 +3,7 @@ import apiConfig from '../config'
 
 const endPoints = {
   users: '/users',
+  nearby: '/nearby',
 }
 /**
  * Function for user registration
@@ -21,3 +22,9 @@ export const update = (user, jwtToken) => axiosApi(apiConfig.serverURL, endPoint
  * @param {*} jwtToken => user JWT token
  */
 export const authenticate = async jwtToken => axiosApi(apiConfig.serverURL, endPoints.users, {}, 'GET', { token: jwtToken })
+/**
+ * Function to get user information
+ * @param {*} userId => user id
+ * @param {*} jwtToken => user JWT token
+ */
+export const information = async (userId, jwtToken) => axiosApi(apiConfig.auth0Lock.serverURL, `${endPoints.users}/${userId}`, {}, 'GET', { Authorization: `Bearer ${jwtToken}` })

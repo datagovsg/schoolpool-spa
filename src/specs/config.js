@@ -11,6 +11,7 @@ const config = {
     domain: 'schoolpool.auth0.com',
     callbackURL: `${window.location.origin}/callback`,
     audience: 'https://schoolpool.auth0.com/userinfo',
+    serverURL: 'https://schoolpool.auth0.com/api/v2',
   },
 }
 

@@ -9,6 +9,6 @@ const endPoints = {
  * Function to retrieve user's location
  * @param {*} input => user input
  */
-const locate = async input => axiosApi(apiConfig.googleMaps.serverURL, `${endPoints.geocode}${input}&key=${apiConfig.googleMaps.key}`)
+const locate = input => axiosApi(apiConfig.googleMaps.serverURL, `${endPoints.geocode}${input}&key=${apiConfig.googleMaps.key}`)
 
 export default locate

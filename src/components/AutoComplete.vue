@@ -57,7 +57,6 @@
           this.open = true
           this.current = 0
         }
-        this.$emit('interface', value.trim() === '' ? null : this.matches[this.current])
         this.$emit('input', value)
       },
       // When enter key pressed on the input
@@ -95,7 +94,7 @@
       // When one of the suggestion is clicked
       suggestionClick(index) {
         this.$emit('input', this.matches[index].school_name)
-        this.$emit('interface', this.matches[this.current])
+        this.$emit('interface', this.matches[index])
         this.open = false
       },
     },

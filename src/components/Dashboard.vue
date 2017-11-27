@@ -12,12 +12,13 @@
               <li v-for="(component, key) in componentsArray" :key="component.name">
                 <!-- Render registered components from list. Reference: https://forum.vuejs.org/t/how-to-make-a-component-with-menu-item-changing-css-to-active-when-clicked/3235/2 -->
                 <a class="desktop-link" href="#" @click.prevent="swapComponent(component)" :class="{ 'is-active': isSelected(component) }">
-                  <span>{{ component.name }}</span>
                   <i :class="component.icon" aria-hidden="true"></i>
+                  <span>{{ component.name }}</span>
                 </a>
               </li>
               <li @click="logout()" id="logout-btn">
-                <span >Logout</span>
+                <i class="fa fa-sign-out" aria-hidden="true"></i>
+                <span>Logout</span>
               </li>
             </ul>
           </aside>
@@ -69,7 +70,7 @@
     computed: {
       // Pass data to respective child components: Reference: https://stackoverflow.com/questions/43658481/passing-props-dynamically-to-dynamic-component-in-vuejs
       currentProperties() {
-        return this.profile
+        return (this.updatedProfile !== null) ? this.updatedProfile : this.profile
       },
     },
     data() {
@@ -77,6 +78,7 @@
         componentsArray: [{ name: 'Dashboard', icon: 'fa fa-bar-chart fa-lg component-icon' }, { name: 'Settings', icon: 'fa fa-cog fa-lg component-icon' }],
         currentComponent: null,
         isActive: false,
+        updatedProfile: null,
       }
     },
     created() {
