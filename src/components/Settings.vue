@@ -138,11 +138,12 @@
           )
           // If user does not exist in database, perform a POST API registration request
           if (this.userExist === false) {
-            const selectedSchool = []
-            selectedSchool.push(this.selectedSchool.postal_code)
+            const schoolAddress = []
+            schoolAddress.push(this.selectedSchool.postal_code)
             // Add user properties for user registration
             user.phoneNumber = this.phoneNumber
-            user.selectedSchool = selectedSchool
+            user.schoolAddress = schoolAddress
+            console.log(user)
             UserSession.register(user, localStorage.getItem('id_token')).then((response) => {
               console.log(response)
             }).catch((error) => {
