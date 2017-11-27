@@ -34,7 +34,7 @@
             </div>
           </div>
           <!-- Conditional rendering of component. Reference: http://jsbin.com/miwuduliyu/edit?html,js,console,output -->
-          <div :is="currentComponent !== null ? currentComponent.name : 'Dashboard'" v-bind="currentProperties"></div>
+          <div :is="currentComponent !== null ? currentComponent.name : 'Dashboard'" v-bind="currentProperties" @profileChanged="newProperties"></div>
         </div>
       </div>
     </div>
@@ -65,6 +65,9 @@
           return true
         }
         return false
+      },
+      newProperties(profile) {
+        this.profile = profile
       },
     },
     computed: {

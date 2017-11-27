@@ -180,9 +180,13 @@
             console.log(error.response)
           })
           if (isSuccessful) {
+            this.profileChanged()
             this.hasChanged = true
           }
         }
+      },
+      profileChanged() {
+        this.$emit('profileChanged', this.profile)
       },
       addMarker(name, params) {
         if (params === null || params === '') {
