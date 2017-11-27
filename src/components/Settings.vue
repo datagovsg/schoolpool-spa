@@ -3,7 +3,12 @@
     <div class="column">
       <div class="columns">
         <div class="column is-12">
-          <GoogleMaps :center="center" :markers="markers"></GoogleMaps>
+          <GoogleMaps
+            :center="center"
+            :markers="markers"
+            :zoom="zoom"
+          >
+          </GoogleMaps>
         </div>
       </div>
       <div class="columns">
@@ -34,7 +39,9 @@
                   id="map"
                   classname="input"
                   placeholder="Address"
+                  ref="address"
                   v-on:placechanged="getAddressData"
+                  :country="['sg']"
                 >
                 </vue-google-autocomplete>
               </p>
@@ -42,7 +49,12 @@
             <div class="field is-grouped has-addons">
               <div class="control is-expanded has-icons-left">
                 <label class="label">School</label>
-                <auto-complete placeholder="S. by name/region" :suggestions="schools" v-model="school" @interface="getSelectedSchoolData($event)"></auto-complete>
+                <auto-complete placeholder="S. by name/region"
+                  :suggestions="schools"
+                  v-model="school"
+                  @interface="getSelectedSchoolData($event)"
+                >
+                </auto-complete>
               </div>
               <div class="control">
                 <label class="label">Children</label>
@@ -98,6 +110,7 @@
 
   import * as UserSession from '../specs/sessions/user'
   import * as SchoolSession from '../specs/sessions/school'
+  import * as gMapSession from '../specs/sessions/gMap'
   import User from '../specs/models/user'
   
   export default {
@@ -107,35 +120,49 @@
       VueGoogleAutocomplete,
     },
     watch: {
-      // whenever question changes, this function will run
+      // whenever school changes, this function will run
       school() {
         this.fetchSchools()
       },
     },
     methods: {
       onSubmit() {
-        // console.log(this.phoneNumber)
-        // console.log(this.selectedSchool.postal_code)
-        // console.log(this.address)
-        if (this.address !== undefined) {
+        // Check if input fields are empty
+        if (this.address !== undefined && this.phoneNumber !== null && this.school !== '') {
           const { placeResultData = {}, addressData = {} } = this.address
           const user = new User(
-            this.phoneNumber,
             this.profile.name,
             placeResultData.formatted_address,
             addressData.latitude,
             addressData.longitude,
-            [this.selectedSchool.postal_code],
           )
-          UserSession.register(user, localStorage.getItem('id_token')).then((response) => {
+          // If user does not exist in database, perform a POST API registration request
+          if (this.userExist === false) {
+            const selectedSchool = []
+            selectedSchool.push(this.selectedSchool.postal_code)
+            // Add user properties for user registration
+            user.phoneNumber = this.phoneNumber
+            user.selectedSchool = selectedSchool
+            UserSession.register(user, localStorage.getItem('id_token')).then((response) => {
+              console.log(response)
+            }).catch((error) => {
+              console.log(error.response)
+            })
+            return
+          }
+          // Perform a PUT API update request
+          UserSession.update(user, localStorage.getItem('id_token')).then((response) => {
             console.log(response)
           }).catch((error) => {
-            console.log(error.response)
+            console.log(error)
           })
         }
       },
-      addMarker(name) {
-        UserSession.locate(this.selectedSchool.postal_code).then((response) => {
+      async addMarker(name, params) {
+        if (params === null || params === '') {
+          return
+        }
+        await gMapSession.default(params).then((response) => {
           const { location = {} } = response.data.results[0].geometry
           this.markers.push({
             position: location,
@@ -147,27 +174,36 @@
       },
       removeMarker(name) {
         let index = 0
+        let exist = false
         for (let i = 0; i < this.markers.length; i++) {
           if (this.markers[i].name === name) {
             index = i
+            exist = true
             break
           }
         }
-        this.markers.splice(index, 1)
+        if (exist) {
+          this.markers.splice(index, 1)
+        }
       },
       getSelectedSchoolData(event) {
         this.selectedSchool = event
         // Check if selected school is defined
         if (this.selectedSchool !== undefined && this.selectedSchool !== null) {
-          this.addMarker()
+          this.addMarker('school', this.selectedSchool.postal_code)
         } else {
-          this.removeMarker()
+          this.removeMarker('school')
         }
       },
       getAddressData(addressData, placeResultData) {
         this.address = {
           placeResultData,
           addressData,
+        }
+        if (addressData !== undefined && addressData !== null) {
+          this.addMarker('user', addressData.postal_code)
+        } else {
+          this.removeMarker('user')
         }
       },
       fetchSchools: _.debounce(function getSchools() {
@@ -187,16 +223,45 @@
     },
     data() {
       return {
-        selectedSchool: null,
         school: '',
+        address: '',
         schools: [],
-        phoneNumber: null,
-        center: { lat: 1.3521, lng: 103.8198 },
         markers: [],
+        phoneNumber: null,
+        selectedSchool: null,
+        userExist: false,
+        center: { lat: 1.3521, lng: 103.8198 },
+        zoom: 7,
       }
     },
-    created() {
+    async created() {
       this.profile = this.$attrs
+      await UserSession.authenticate(localStorage.getItem('id_token'))
+        .then(async (response) => {
+          this.userExist = !this.userExist
+          // User exist in the database
+          const { user = {} } = response.data
+          // Update form information
+          this.phoneNumber = user.phoneNumber
+          this.$refs.address.update(user.address)
+          this.addMarker('user', user.address)
+          // TODO: schoolAddress is an array and UI must cater to multiple schools
+          await SchoolSession.default(user.schoolAddress[0]).then(async (res) => {
+            const { result = {} } = res.data
+            const { records = [] } = result
+            // Assume that a single postal code contains only 1 school
+            this.school = records[0].school_name
+            this.addMarker('school', records[0].postal_code)
+          })
+          console.log(this.markers)
+          this.zoom = 11
+        })
+        .catch((e) => {
+          // User does not exist in the database
+          if (e.response.status === 401) {
+            this.isActive = !this.isActive
+          }
+        })
     },
   }
 

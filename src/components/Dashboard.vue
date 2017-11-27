@@ -41,10 +41,9 @@
 </template>
 
 <script>
-  import axios from 'axios'
   import Dashboard from './Default'
   import Settings from './Settings'
-  import Config from '../specs/config'
+  import * as UserSession from '../specs/sessions/user'
 
   export default {
     components: {
@@ -85,16 +84,16 @@
         auth = {},
       } = this.$parent
       this.auth = auth
+      // Set profile to Auth0 instance
       this.profile = JSON.parse(localStorage.getItem('profile'))
-      axios.get(`${Config.serverURL}/users`, {
-        token: localStorage.getItem('id_token'),
-      })
+      UserSession.authenticate(localStorage.getItem('id_token'))
         .then((response) => {
           // JSON responses are automatically parsed.
-          const { data } = response
-          console.log(data)
+          const { user = {} } = response.data
+          this.updatedProfile = user
         })
         .catch((e) => {
+          // User does not exist in the database
           if (e.response.status === 401) {
             this.isActive = !this.isActive
           }

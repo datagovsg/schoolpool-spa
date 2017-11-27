@@ -8,6 +8,7 @@ const endPoints = {
  * Function to search for schools
  * @param {*} input => search parameters
  */
-const search = input => axiosApi(apiConfig.govServerURL, `?resource_id=${endPoints.school}${input}`)
+const search = async input => axiosApi(apiConfig.govServerURL, `?resource_id=${endPoints.school}${input}`)
 
 export default search
+

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <gmap-map :center="this.center" :zoom="10" map-type-id="roadmap" class="google-maps">
+    <gmap-map :center="this.center" :zoom="zoom" map-type-id="roadmap" class="google-maps">
       <gmap-marker
         :key="index"
         v-for="(m, index) in this.markers"
@@ -37,6 +37,10 @@
         type: Object,
         required: true,
       },
+      zoom: {
+        type: Number,
+        required: true,
+      },
     },
     data() {
       return {}
@@ -45,7 +49,9 @@
 </script>
 
 <style lang="sass" scoped>
+
   .google-maps
     height: 250px
+    
 </style>
 

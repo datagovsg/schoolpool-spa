@@ -2,18 +2,22 @@ import axiosApi from '../index'
 import apiConfig from '../config'
 
 const endPoints = {
-  register: '/users',
-  geocode: '/geocode/json?address=',
+  users: '/users',
 }
 /**
  * Function for user registration
  * @param {*} user => user information
  * @param {*} jwtToken => user JWT token
  */
-export const register = (user, jwtToken) => axiosApi(apiConfig.serverURL, endPoints.register, user, 'POST', { token: jwtToken })
+export const register = (user, jwtToken) => axiosApi(apiConfig.serverURL, endPoints.users, user, 'POST', { token: jwtToken })
 /**
- * Function to retrieve user's location
- * @param {*} postalCode => user postal code
+ * Function for user registration
+ * @param {*} user => user information
+ * @param {*} jwtToken => user JWT token
  */
-export const locate = postalCode => axiosApi(apiConfig.googleMaps.serverURL, `${endPoints.geocode}${postalCode}&key=${apiConfig.googleMaps.key}`)
-
+export const update = (user, jwtToken) => axiosApi(apiConfig.serverURL, endPoints.users, user, 'PUT', { token: jwtToken })
+/**
+ * Function for user authentication
+ * @param {*} jwtToken => user JWT token
+ */
+export const authenticate = async jwtToken => axiosApi(apiConfig.serverURL, endPoints.users, {}, 'GET', { token: jwtToken })
