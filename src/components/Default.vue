@@ -16,14 +16,6 @@
         </section>
       </div>
     </div>
-    <div class="columns">
-      <div class="column is-12">
-        <div class="notification is-warning">
-          <button class="delete"></button> Please navigate to
-          <a>Profile Settings</a> to update your personal information
-        </div>
-      </div>
-    </div>
     <div class="columns card_container">
       <div class="column is-6">
         <div class="card events-card">
@@ -45,44 +37,7 @@
                     <td width="5%">
                       <i class="fa fa-bell-o"></i>
                     </td>
-                    <td>Lorum ipsum dolem aire</td>
-                    <td>
-                      <a class="button is-small is-primary" href="#">Action</a>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-          <div class="card-table">
-            <div class="content">
-              <table class="table is-fullwidth is-striped">
-                <tbody>
-                  <tr>
-                    <td width="5%">
-                      <i class="fa fa-bell-o"></i>
-                    </td>
-                    <td>Lorum ipsum dolem aire</td>
-                    <td>
-                      <a class="button is-small is-primary" href="#">Action</a>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-          <div class="card-table">
-            <div class="content">
-              <table class="table is-fullwidth is-striped">
-                <tbody>
-                  <tr>
-                    <td width="5%">
-                      <i class="fa fa-bell-o"></i>
-                    </td>
-                    <td>Lorum ipsum dolem aire</td>
-                    <td>
-                      <a class="button is-small is-primary" href="#">Action</a>
-                    </td>
+                    <td>Fetch John Smith's children to <strong>Anderson Secondary School</strong></td>
                   </tr>
                 </tbody>
               </table>
@@ -94,39 +49,19 @@
         </div>
       </div>
       <div class="column is-6">
-        <div class="card">
-          <div class="card-content">
-            <div class="media">
-              <div class="media-left">
-                <figure class="image is-48x48">
-                  <img src="https://bulma.io/images/placeholders/96x96.png" alt="Placeholder image">
-                </figure>
-              </div>
-              <div class="media-content">
-                <p class="title is-4">John Smith</p>
-                <p class="subtitle is-6">
-                  <time>{{ currentDate }}</time>
-                </p>
-              </div>
-            </div>
-
-            <div class="content">
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus nec iaculis mauris.
-              <br>
-            </div>
-          </div>
-          <footer class="card-footer">
-            <a href="#" class="card-footer-item">Edit</a>
-            <a href="#" class="card-footer-item">Delete</a>
-          </footer>
-        </div>
+        <partner :profile="profile"></partner>
       </div>
     </div>
   </div>
 </template>
 
 <script>
+import Partner from './Partner'
+
 export default {
+  components: {
+    Partner,
+  },
   computed: {
     currentDate() {
       const today = new Date()
@@ -146,8 +81,11 @@ export default {
     },
   },
   data() {
-    this.profile = this.$attrs
     return {}
+  },
+  created() {
+    this.profile = this.$attrs
+    console.log(this.profile)
   },
 }
 </script>

@@ -1,22 +1,46 @@
 <template>
-  <gmap-map :center="{lat:10, lng:10}" :zoom="7" map-type-id="terrain" class="google-maps"></gmap-map>
+  <div>
+    <gmap-map :center="this.center" :zoom="zoom" map-type-id="roadmap" class="google-maps">
+      <gmap-marker
+        :key="index"
+        v-for="(m, index) in this.markers"
+        :position="m.position"
+        :clickable="false"
+        :draggable="false"
+      >
+      </gmap-marker>
+    </gmap-map>
+  </div>
 </template>
 
 <script>
   import Vue from 'vue'
   import * as VueGoogleMaps from 'vue2-google-maps'
+  import Config from '../specs/config'
 
   Vue.use(VueGoogleMaps, {
     load: {
-      key: 'AIzaSyAm8UrU_IlJ1ZIcSUeESFm7HfeYELf6F-w',
-      libraries: 'places', // This is required if you use the Autocomplete plugin
-      // OR: libraries: 'places,drawing'
-      // OR: libraries: 'places,drawing,visualization'
-      // (as you require)
+      key: Config.googleMaps.key,
+      libraries: 'places',
+      v: '3.26',
     },
   })
 
   export default {
+    props: {
+      markers: {
+        type: Array,
+        required: true,
+      },
+      center: {
+        type: Object,
+        required: true,
+      },
+      zoom: {
+        type: Number,
+        required: true,
+      },
+    },
     data() {
       return {}
     },
@@ -24,7 +48,9 @@
 </script>
 
 <style lang="sass" scoped>
+
   .google-maps
-    height: 350px
+    height: 250px
+    
 </style>
 

@@ -1,32 +1,40 @@
 <template>
-  <div class="hero is-fullheight admin-controller">
+  <div class="section admin-controller full-height">
     <div class="container">
       <div class="columns is-mobile">
-        <div class="column is-3">
+        <div id="nav" class="side-nav column is-2">
           <aside class="menu">
             <figure class="profile-image">
-                <img src="https://loremflickr.com/128/128" />
+                <img :src="profileImage" />
             </figure>
             <br>
             <ul class="menu-list" ref="navigationArray">
-              <li v-for="(component, key) in componentsArray" :key="component">
+              <li v-for="(component, key) in componentsArray" :key="component.name">
                 <!-- Render registered components from list. Reference: https://forum.vuejs.org/t/how-to-make-a-component-with-menu-item-changing-css-to-active-when-clicked/3235/2 -->
-                <a href="#" @click.prevent="swapComponent(component)" :class="{ 'is-active': isSelected(component) }">{{ component }}</a>
+                <a class="desktop-link" href="#" @click.prevent="swapComponent(component)" :class="{ 'is-active': isSelected(component) }">
+                  <i :class="component.icon" aria-hidden="true"></i>
+                  <span>{{ component.name }}</span>
+                </a>
               </li>
-              <li>
-                <button @click="logout()" class="button is-info is-outlined">
-                  <span class="icon">
-                    <i class="fa fa-sign-out" aria-hidden="true"></i>
-                  </span>
-                  <span>Logout</span>
-                </button>
+              <li @click="logout()" id="logout-btn">
+                <i class="fa fa-sign-out" aria-hidden="true"></i>
+                <span>Logout</span>
               </li>
             </ul>
           </aside>
         </div>
-        <div class="column is-9">
+        <div class="side-nav column is-2"></div>
+        <div class="column is-10">
+          <div class="columns" v-if="isActive">
+            <div class="column is-12">
+              <div class="notification is-warning">
+                <button class="delete"></button> Please navigate to
+                <a>Profile Settings</a> to update your personal information
+              </div>
+            </div>
+          </div>
           <!-- Conditional rendering of component. Reference: http://jsbin.com/miwuduliyu/edit?html,js,console,output -->
-          <div :is="currentComponent" v-bind="currentProperties"></div>
+          <div :is="currentComponent !== null ? currentComponent.name : 'Dashboard'" v-bind="this.profile" @profileChanged="newProperties"></div>
         </div>
       </div>
     </div>
@@ -34,9 +42,9 @@
 </template>
 
 <script>
-  import axios from 'axios'
   import Dashboard from './Default'
   import Settings from './Settings'
+  import * as UserSession from '../specs/sessions/user'
 
   export default {
     components: {
@@ -50,37 +58,52 @@
       swapComponent(component) {
         this.currentComponent = component
       },
+      // Logic for swapping view component
       isSelected(component) {
-        return this.currentComponent === component
-      },
-    },
-    computed: {
-      // Pass data to respective child components: Reference: https://stackoverflow.com/questions/43658481/passing-props-dynamically-to-dynamic-component-in-vuejs
-      currentProperties() {
-        if (this.currentComponent === 'Dashboard') {
-          return JSON.parse(localStorage.getItem('profile'))
+        if (this.currentComponent !== null) {
+          return this.currentComponent === component
+        } else if (component.name === 'Dashboard') {
+          return true
         }
-        return {}
+        return false
+      },
+      newProperties(profile) {
+        this.profile = profile
       },
     },
     data() {
       return {
-        componentsArray: ['Dashboard', 'Settings'],
-        currentComponent: 'Dashboard',
+        componentsArray: [{ name: 'Dashboard', icon: 'fa fa-bar-chart fa-lg component-icon' }, { name: 'Settings', icon: 'fa fa-cog fa-lg component-icon' }],
+        profileImage: '',
+        isActive: false,
+        currentComponent: null,
+        profile: JSON.parse(localStorage.getItem('profile')),
       }
     },
-    created() {
+    async created() {
       const {
         auth = {},
       } = this.$parent
       this.auth = auth
-      axios.get('http://jsonplaceholder.typicode.com/posts')
-        .then((response) => {
+      // Authenticate with server to ensure that user exist
+      await UserSession.authenticate(localStorage.getItem('id_token'))
+        .then(async (response) => {
           // JSON responses are automatically parsed.
-          this.posts = response.data
+          const { user = {} } = response.data
+          this.profile = user
+          // Retrieve user information from Auth0 instance
+          const sub = (this.profile.sub !== undefined) ? this.profile.sub : this.profile.id
+          await UserSession.information(sub, localStorage.getItem('id_token'))
+            .then((res) => {
+              this.profileImage = res.data.picture
+            })
         })
         .catch((e) => {
-          this.errors.push(e)
+          // User does not exist in the database
+          if (e.response.status === 401) {
+            this.profileImage = this.profile.picture
+            this.isActive = !this.isActive
+          }
         })
     },
   }
@@ -89,10 +112,6 @@
 
 <style lang="sass" scoped>
 
-  .profile-image
-    text-align: center
-  .profile-image img
-    border-radius: 100%
   .admin-controller
     background-color: #ecf0f1
     padding-top: 20px 
@@ -100,5 +119,7 @@
     margin: 20px auto 
   .menu-list li a 
     font-weight: 500
+  .full-height 
+    min-height: 100vh
 
 </style>
