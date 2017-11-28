@@ -1,4 +1,4 @@
-$primary: #1EC9AC !default
+$primary: #209cee !default
 // Responsiveness
 // 960, 1152, and 1344 have been chosen because they are divisible by both 12 and 16
 $tablet: 769px !default
@@ -8,6 +8,21 @@ $desktop: 1000px !default
 $widescreen: 1192px !default
 // 1344px container + 40
 $fullhd: 1384px !default
+
+.profile-image
+  text-align: center
+.profile-image img
+  border-radius: 100%
+body
+  overflow: hidden
+/* For Firefox */
+input[type='number']
+  -moz-appearance:textfield
+/* Webkit browsers like Safari and Chrome */
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button
+  -webkit-appearance: none
+  margin: 0
 
 =mobile
   @media screen and (max-width: $tablet - 1px)

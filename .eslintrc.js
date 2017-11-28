@@ -24,6 +24,7 @@ module.exports = {
     },
     // add your custom rules here
     'rules': {
+      "no-plusplus": 0,
       "no-param-reassign": 0,
       // don't allow extra semicolons
       "semi": ["error", "never"],
