@@ -4,7 +4,7 @@
       <div class="media">
         <div class="media-left">
           <figure class="image is-48x48 profile-image">
-            <img :src="profile.picture" alt="Placeholder image">
+            <img :src="image" alt="Placeholder image">
           </figure>
         </div>
         <div class="media-content">
@@ -26,6 +26,10 @@ export default {
     profile: {
       type: Object,
       required: true,
+    },
+    image: {
+      type: String,
+      required: false,
     },
   },
 }

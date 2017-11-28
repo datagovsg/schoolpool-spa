@@ -5,7 +5,7 @@
         <div id="nav" class="side-nav column is-2">
           <aside class="menu">
             <figure class="profile-image">
-                <img :src="profile.picture" />
+                <img :src="profileImage" />
             </figure>
             <br>
             <ul class="menu-list" ref="navigationArray">
@@ -34,7 +34,7 @@
             </div>
           </div>
           <!-- Conditional rendering of component. Reference: http://jsbin.com/miwuduliyu/edit?html,js,console,output -->
-          <div :is="currentComponent !== null ? currentComponent.name : 'Dashboard'" v-bind="currentProperties" @profileChanged="newProperties"></div>
+          <div :is="currentComponent !== null ? currentComponent.name : 'Dashboard'" v-bind="this.profile" @profileChanged="newProperties"></div>
         </div>
       </div>
     </div>
@@ -58,6 +58,7 @@
       swapComponent(component) {
         this.currentComponent = component
       },
+      // Logic for swapping view component
       isSelected(component) {
         if (this.currentComponent !== null) {
           return this.currentComponent === component
@@ -70,36 +71,37 @@
         this.profile = profile
       },
     },
-    computed: {
-      // Pass data to respective child components: Reference: https://stackoverflow.com/questions/43658481/passing-props-dynamically-to-dynamic-component-in-vuejs
-      currentProperties() {
-        return (this.updatedProfile !== null) ? this.updatedProfile : this.profile
-      },
-    },
     data() {
       return {
         componentsArray: [{ name: 'Dashboard', icon: 'fa fa-bar-chart fa-lg component-icon' }, { name: 'Settings', icon: 'fa fa-cog fa-lg component-icon' }],
-        currentComponent: null,
+        profileImage: '',
         isActive: false,
-        updatedProfile: null,
+        currentComponent: null,
+        profile: JSON.parse(localStorage.getItem('profile')),
       }
     },
-    created() {
+    async created() {
       const {
         auth = {},
       } = this.$parent
       this.auth = auth
-      // Set profile to Auth0 instance
-      this.profile = JSON.parse(localStorage.getItem('profile'))
-      UserSession.authenticate(localStorage.getItem('id_token'))
-        .then((response) => {
+      // Authenticate with server to ensure that user exist
+      await UserSession.authenticate(localStorage.getItem('id_token'))
+        .then(async (response) => {
           // JSON responses are automatically parsed.
           const { user = {} } = response.data
-          this.updatedProfile = user
+          this.profile = user
+          // Retrieve user information from Auth0 instance
+          const sub = (this.profile.sub !== undefined) ? this.profile.sub : this.profile.id
+          await UserSession.information(sub, localStorage.getItem('id_token'))
+            .then((res) => {
+              this.profileImage = res.data.picture
+            })
         })
         .catch((e) => {
           // User does not exist in the database
           if (e.response.status === 401) {
+            this.profileImage = this.profile.picture
             this.isActive = !this.isActive
           }
         })

@@ -194,10 +194,13 @@
         }
         gMapSession.default(params).then((response) => {
           const { location = {} } = response.data.results[0].geometry
+          // Remove existing marker before replacing it
+          this.removeMarker(name)
           this.markers.push({
             position: location,
             name,
           })
+          this.zoom = 11
         }).catch((error) => {
           console.log(error.response)
         })
@@ -298,7 +301,6 @@
       this.userExist = !this.userExist
       // Update form information
       this.updateUserInformation(this.profile)
-      this.zoom = 11
     },
     mounted() {
       this.$refs.address.update(this.profile.address)

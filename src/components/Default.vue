@@ -57,7 +57,6 @@
 
 <script>
 import Partner from './Partner'
-// import * as UserSession from '../specs/sessions/user'
 
 export default {
   components: {
@@ -82,13 +81,11 @@ export default {
     },
   },
   data() {
+    return {}
+  },
+  created() {
     this.profile = this.$attrs
     console.log(this.profile)
-    // UserSession.information(this.profile.sub, localStorage.getItem('id_token'))
-    //   .then((response) => {
-    //     console.log(response)
-    //   })
-    return {}
   },
 }
 </script>
