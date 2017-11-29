@@ -9,7 +9,7 @@
 <script>
 import AppNav from '../src/components/AppNav'
 import AppFooter from '../src/components/AppFooter'
-import { AuthService } from './specs/sessions/AuthService'
+import { AuthService } from './specs/models/AuthService'
 
 const auth = new AuthService()
 

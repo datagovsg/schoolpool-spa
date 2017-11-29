@@ -99,7 +99,7 @@
   import * as UserSession from '../specs/sessions/user'
   import * as SchoolSession from '../specs/sessions/school'
   import * as gMapSession from '../specs/sessions/gMap'
-  import User from '../specs/models/user'
+  import User from '../specs/models/User'
   
   export default {
     components: {
