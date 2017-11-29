@@ -35,12 +35,6 @@
             </div>
           </div>
           <!-- Conditional rendering of component. Reference: http://jsbin.com/miwuduliyu/edit?html,js,console,output -->
-          <!-- <div v-if="profile && pairedProfile" :is="currentComponent !== null ? currentComponent.name : 'Dashboard'"
-            :profile="profile"
-            :pairedProfile="pairedProfile"
-            @profileChanged="newProperties" /> -->
-          <!-- TODO: Add loading page -->
-          <!-- <div v-else>Loading...</div> -->
           <router-view v-if="profile && pairedProfile"
             :profile="profile"
             :pairedProfile="pairedProfile"
@@ -78,10 +72,6 @@
         return this.currentComponent.toLowerCase() === component.name.toLowerCase()
       },
       newProperties(profile) {
-      /**
-       *  Bind profile settings to global variable.
-       *  Bind occurs at line 38, v-bind="this.profile"
-      */
         this.profile = profile
       },
     },
