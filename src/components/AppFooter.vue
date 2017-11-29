@@ -1,5 +1,5 @@
 <template>
-  <footer class="footer is-primary">
+  <footer class="footer">
     <div class="container">
       <div class="columns">
         <div class="column">

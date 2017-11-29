@@ -1,0 +1,40 @@
+$tablet: 769px !default;
+#nav {
+  position: fixed;
+  left: 0;
+  top: 0;
+}
+.side-nav {
+  @media screen and ( max-width:$tablet - 1px ) {
+    width: 80px !important;
+    span {
+      display: none;
+    }
+    text-align: center;
+  }
+}
+.a-icon {
+  float: right;
+}
+.component-icon {
+  float: right;
+  @media screen and ( max-width:$tablet - 1px ){
+    float: initial;
+  }
+}
+#logout-btn {
+  color: #4a4a4a;
+  font-weight: 500;
+  padding: 5px 12px;
+  position: fixed;
+  bottom: 10px;
+  width: 23%;
+  &:hover{
+    color: #209cee;
+    cursor: pointer;
+  }
+  @media screen and ( max-width:$tablet - 1px ){
+    width: 60px !important;
+    padding-left: 0px;
+  }
+}
