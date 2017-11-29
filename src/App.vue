@@ -9,9 +9,9 @@
 <script>
 import AppNav from '../src/components/AppNav'
 import AppFooter from '../src/components/AppFooter'
-import { AuthService } from './specs/models/AuthService'
+import { Auth } from './specs/models/Auth'
 
-const auth = new AuthService()
+const auth = new Auth()
 
 export default {
   name: 'app',

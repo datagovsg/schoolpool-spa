@@ -3,7 +3,7 @@ import Router from 'vue-router'
 import Home from '@/components/Home'
 import Callback from '@/components/Callback'
 import Dashboard from '@/components/Dashboard'
-import { requireAuth } from '../specs/models/AuthService'
+import { requireAuth } from '../specs/models/Auth'
 
 Vue.use(Router)
 

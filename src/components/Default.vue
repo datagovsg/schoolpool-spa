@@ -59,6 +59,12 @@
 import Partner from './Partner'
 
 export default {
+  props: {
+    profile: {
+      type: Object,
+      required: true,
+    },
+  },
   components: {
     Partner,
   },
@@ -84,7 +90,6 @@ export default {
     return {}
   },
   created() {
-    this.profile = this.$attrs
     console.log(this.profile)
   },
 }

@@ -4,9 +4,9 @@ import router from '../../router/index'
 import Store from '../../store/index'
 import Config from '../config'
 
-export class AuthService {
+export class Auth {
   constructor() {
-    this.authenticated = AuthService.isAuthenticated()
+    this.authenticated = Auth.isAuthenticated()
     this.authNotifier = new EventEmitter()
     // Initializing our Auth0Lock
     this.lock = new Auth0Lock(
@@ -69,15 +69,14 @@ export class AuthService {
   }
 
   static async isAuthenticated() {
-    // Check whether the current time is past the
-    // access token's expiry time
+    // Check whether the current time is past the access token's expiry time
     const expiresAt = await JSON.parse(localStorage.getItem('expires_at'))
     return new Date().getTime() < expiresAt
   }
 }
 
+// Function to authenticate a user before rendering a component
 export function requireAuth(to, from, next) {
-  console.log(Store.getters.isLoggedIn)
   if (!Store.getters.isLoggedIn) {
     next({
       path: '/',

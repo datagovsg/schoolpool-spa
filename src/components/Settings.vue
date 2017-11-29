@@ -65,7 +65,7 @@
               <div class="control">
                 <label class="label">Children</label>
                 <span class="select is-fullwidth">
-                  <select>
+                  <select disabled>
                     <option>1</option>
                     <option>2</option>
                     <option>3</option>
@@ -108,6 +108,12 @@
       VueGoogleAutocomplete,
       Partner,
     },
+    props: {
+      profile: {
+        type: Object,
+        required: true,
+      },
+    },
     watch: {
       // whenever school changes, this function will run
       school() {
@@ -123,6 +129,8 @@
         // Check if input fields are empty
         if (this.address !== undefined && this.phoneNumber !== null && this.school !== '') {
           const { placeResultData = {}, addressData = {} } = this.address
+          let jwtToken = null
+          let updatedProfile = null
           let isSuccessful = false
           let tempLat = null
           let tempLong = null
@@ -155,38 +163,40 @@
             tempLong,
             tempSchoolAddress,
           )
+          try {
+            jwtToken = localStorage.getItem('id_token')
+          } catch (error) {
+            console.log(error)
+          }
           // If user does not exist in database, perform a POST API registration request
           if (this.userExist === false) {
             // Add user properties for user registration
             user.phoneNumber = this.phoneNumber
-            await UserSession.register(user, localStorage.getItem('id_token')).then((response) => {
+            await UserSession.register(user, jwtToken).then((response) => {
               const { data = {} } = response
-              const profile = data.user
-              this.updateUserInformation(profile)
+              updatedProfile = this.updateUserInformation(data.user)
               isSuccessful = true
-              this.profile = profile
+            }).catch((error) => {
+              console.log(error.response)
+            })
+          } else {
+            // Perform a PUT API update request
+            await UserSession.update(user, jwtToken).then((response) => {
+              const { data = {} } = response
+              updatedProfile = this.updateUserInformation(data.user)
+              isSuccessful = true
             }).catch((error) => {
               console.log(error.response)
             })
           }
-          // Perform a PUT API update request
-          await UserSession.update(user, localStorage.getItem('id_token')).then((response) => {
-            const { data = {} } = response
-            const profile = data.user
-            this.updateUserInformation(profile)
-            isSuccessful = true
-            this.profile = profile
-          }).catch((error) => {
-            console.log(error.response)
-          })
           if (isSuccessful) {
-            this.profileChanged()
+            this.profileChanged(updatedProfile)
             this.hasChanged = true
           }
         }
       },
-      profileChanged() {
-        this.$emit('profileChanged', this.profile)
+      profileChanged(updatedProfile) {
+        this.$emit('profileChanged', updatedProfile)
       },
       addMarker(name, params) {
         if (params === null || params === '') {
@@ -248,17 +258,19 @@
           this.removeMarker('user')
         }
       },
-      async updateUserInformation(profile) {
-        this.phoneNumber = profile.phoneNumber
-        this.addMarker('user', profile.address)
+      updateUserInformation(profile) {
+        const updatedProfile = Object.assign(this.profile, profile)
+        this.addMarker('user', updatedProfile.address)
         // TODO: schoolAddress is an array and UI must cater to multiple schools
-        await SchoolSession.default(profile.schoolAddress[0]).then(async (res) => {
+        SchoolSession.default(updatedProfile.schoolAddress[0]).then(async (res) => {
           const { result = {} } = res.data
           const { records = [] } = result
           // Assume that a single postal code contains only 1 school
           this.school = records[0].school_name
+          this.phoneNumber = updatedProfile.phoneNumber
           this.addMarker('school', records[0].postal_code)
         })
+        return updatedProfile
       },
       // Fetch school information base on school search query
       fetchSchools: _.debounce(function getSchools() {
@@ -292,7 +304,6 @@
       }
     },
     async created() {
-      this.profile = this.$attrs
       // Check if user was a registered member by phone number
       if (this.profile.phoneNumber === undefined) {
         return
