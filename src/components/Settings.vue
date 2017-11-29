@@ -80,8 +80,8 @@
             </div>
           </form>
         </div>
-        <div class="column is-6">
-          <partner :profile="profile"></partner>
+        <div v-if="pairedProfile" class="column is-6">
+          <partner :profile="pairedProfile"></partner>
         </div>
       </div>
     </div>
@@ -112,6 +112,10 @@
       profile: {
         type: Object,
         required: true,
+      },
+      pairedProfile: {
+        type: Object,
+        required: false,
       },
     },
     watch: {
@@ -321,8 +325,5 @@
 </script>
 
 <style lang="sass" scoped>
-  .fade-enter-active, .fade-leave-active
-    transition: opacity .3s
-  .fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */
-    opacity: 0
+  
 </style>
