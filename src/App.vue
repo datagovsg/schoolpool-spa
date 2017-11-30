@@ -1,5 +1,5 @@
 <template>
-  <div id="app" :auth="auth">
+  <div id="app">
     <app-nav v-if="!isActive"></app-nav>
     <router-view />
     <app-footer v-if="!isActive"></app-footer>
@@ -26,7 +26,7 @@ export default {
   },
   computed: {
     isActive() {
-      return this.$route.path.includes('dashboard')
+      return this.$route.path.includes('control-panel')
     },
   },
 }
@@ -37,6 +37,11 @@ export default {
   @import '../node_modules/bulma/bulma.sass'
   @import './style/mq'
   @import './style/responsive'
+
+  .fade-enter-active, .fade-leave-active
+    transition: opacity .3s
+  .fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */
+    opacity: 0
 
   // Google Place autocomplete styling. Reference: https://developers.google.com/maps/documentation/javascript/examples/places-autocomplete
   // .pac-container
