@@ -1,5 +1,5 @@
 <template>
-  <div id="app" :auth="auth">
+  <div id="app">
     <app-nav v-if="!isActive"></app-nav>
     <router-view />
     <app-footer v-if="!isActive"></app-footer>
