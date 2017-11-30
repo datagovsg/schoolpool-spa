@@ -11,13 +11,14 @@ Vue.use(Router)
 
 export default new Router({
   mode: 'history',
+  base: '/schoolpool-spa/',
   // Enable path and anchor
-  scrollBehavior(to) {
-    if (to.hash) {
-      return { selector: to.hash }
-    }
-    return { x: 0, y: 0 }
-  },
+  // scrollBehavior(to) {
+  //   if (to.hash) {
+  //     return { selector: to.hash }
+  //   }
+  //   return { x: 0, y: 0 }
+  // },
   routes: [
     {
       path: '/home',
