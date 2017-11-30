@@ -1,5 +1,4 @@
 import Auth0Lock from 'auth0-lock'
-import EventEmitter from 'EventEmitter'
 import router from '../../router/index'
 import Store from '../../store/index'
 import Config from '../config'
@@ -7,7 +6,6 @@ import Config from '../config'
 export class Auth {
   constructor() {
     this.authenticated = Auth.isAuthenticated()
-    this.authNotifier = new EventEmitter()
     // Initializing our Auth0Lock
     this.lock = new Auth0Lock(
       Config.auth0Lock.clientID,
@@ -46,7 +44,7 @@ export class Auth {
         }
         Store.dispatch('login', profile).then(async () => {
           await this.setSession(authResult)
-          router.replace('dashboard')
+          router.replace('control-panel')
         })
       })
     })
@@ -58,11 +56,11 @@ export class Auth {
     localStorage.setItem('access_token', authResult.accessToken)
     localStorage.setItem('id_token', authResult.idToken)
     localStorage.setItem('expires_at', expiresAt)
-    this.authNotifier.emit('authChange', { authenticated: true })
+    console.log(this)
   }
 
   logout() {
-    this.authNotifier.emit('authChange', false)
+    console.log(this)
     Store.dispatch('logout')
     // navigate to the home route
     router.replace('home')
