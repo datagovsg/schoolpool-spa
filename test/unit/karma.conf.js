@@ -14,7 +14,11 @@ module.exports = function (config) {
     browsers: ['PhantomJS'],
     frameworks: ['mocha', 'sinon-chai', 'phantomjs-shim'],
     reporters: ['spec', 'coverage'],
-    files: ['./index.js'],
+    // Karma, PhantomJS and es6 Promises. Reference: https://stackoverflow.com/questions/29391111/karma-phantomjs-and-es6-promises
+    files: [
+      '../../node_modules/babel-polyfill/dist/polyfill.js',
+      './index.js',   //could be /src/**/*.js
+    ],
     preprocessors: {
       './index.js': ['webpack', 'sourcemap']
     },
