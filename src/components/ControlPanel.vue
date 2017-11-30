@@ -91,11 +91,11 @@
       } = this.$parent
       this.auth = auth
       let jwtToken = null
-      console.log(this.$route)
       try {
         jwtToken = localStorage.getItem('id_token')
       } catch (error) {
         console.log(error)
+        return
       }
       // Authenticate with server to ensure that user exist
       await UserSession.authenticate(jwtToken)
