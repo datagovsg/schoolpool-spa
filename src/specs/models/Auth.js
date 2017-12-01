@@ -56,14 +56,14 @@ export class Auth {
     localStorage.setItem('access_token', authResult.accessToken)
     localStorage.setItem('id_token', authResult.idToken)
     localStorage.setItem('expires_at', expiresAt)
-    console.log(this)
+    this.authResult = authResult
   }
 
   logout() {
-    console.log(this)
     Store.dispatch('logout')
     // navigate to the home route
     router.replace('home')
+    this.authResult = null
   }
 
   static async isAuthenticated() {

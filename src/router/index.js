@@ -37,7 +37,7 @@ export default new Router({
       children: [
         // ControlPanel will be rendered inside ControlPanel's <router-view>
         // when /control-panel is matched
-        { path: '', name: 'ControlPanel', component: Dashboard },
+        { path: '', name: 'ControlPanel', redirect: '/control-panel/dashboard' },
 
         // ControlPanel will be rendered inside ControlPanel's <router-view>
         // when /control-panel/dashboard is matched

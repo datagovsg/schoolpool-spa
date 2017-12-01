@@ -77,12 +77,15 @@
     },
     data() {
       return {
-        componentsArray: [{ name: 'Dashboard', icon: 'fa fa-bar-chart fa-lg component-icon' }, { name: 'Settings', icon: 'fa fa-cog fa-lg component-icon' }],
+        componentsArray: [
+          { name: 'Dashboard', icon: 'fa fa-bar-chart fa-lg component-icon' },
+          { name: 'Settings', icon: 'fa fa-cog fa-lg component-icon' },
+        ],
         profileImage: '',
         isActive: false,
         profile: null,
         pairedProfile: null,
-        currentComponent: this.$route.path.substr(this.$route.path.lastIndexOf('/') + 1),
+        currentComponent: this.$route.name,
       }
     },
     async created() {
@@ -91,6 +94,7 @@
       } = this.$parent
       this.auth = auth
       let jwtToken = null
+      console.log(this)
       try {
         jwtToken = localStorage.getItem('id_token')
       } catch (error) {
