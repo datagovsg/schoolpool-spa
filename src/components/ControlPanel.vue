@@ -35,7 +35,7 @@
             </div>
           </div>
           <!-- Conditional rendering of component. Reference: http://jsbin.com/miwuduliyu/edit?html,js,console,output -->
-          <router-view v-if="profile && pairedProfile"
+          <router-view v-if="profile"
             :profile="profile"
             :pairedProfile="pairedProfile"
             @profileChanged="newProperties">
@@ -94,9 +94,9 @@
       } = this.$parent
       this.auth = auth
       let jwtToken = null
-      console.log(this)
       try {
         jwtToken = localStorage.getItem('id_token')
+        this.profile = JSON.parse(localStorage.getItem('profile'))
       } catch (error) {
         console.log(error)
         return
@@ -122,14 +122,9 @@
         .catch((e) => {
           // User does not exist in the database
           if (e.response.status === 401) {
-            try {
-              // Set this.profile to default value
-              this.profile = JSON.parse(jwtToken)
-              this.profileImage = this.profile.picture
-              this.isActive = !this.isActive
-            } catch (error) {
-              console.log(error)
-            }
+            // Set this.profile to default value
+            this.profileImage = this.profile.picture
+            this.isActive = !this.isActive
           }
         })
     },
