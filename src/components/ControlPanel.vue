@@ -77,10 +77,7 @@
     },
     data() {
       return {
-        componentsArray: [
-          { name: 'Dashboard', icon: 'fa fa-bar-chart fa-lg component-icon' },
-          { name: 'Settings', icon: 'fa fa-cog fa-lg component-icon' },
-        ],
+        componentsArray: [{ name: 'Dashboard', icon: 'fa fa-bar-chart fa-lg component-icon' }, { name: 'Settings', icon: 'fa fa-cog fa-lg component-icon' }],
         profileImage: '',
         isActive: false,
         profile: null,
@@ -96,7 +93,6 @@
       let jwtToken = null
       try {
         jwtToken = localStorage.getItem('id_token')
-        this.profile = JSON.parse(localStorage.getItem('profile'))
       } catch (error) {
         console.log(error)
         return
@@ -122,9 +118,14 @@
         .catch((e) => {
           // User does not exist in the database
           if (e.response.status === 401) {
-            // Set this.profile to default value
-            this.profileImage = this.profile.picture
-            this.isActive = !this.isActive
+            try {
+              // Set this.profile to default value
+              this.profile = JSON.parse(localStorage.getItem('profile'))
+              this.profileImage = this.profile.picture
+              this.isActive = !this.isActive
+            } catch (error) {
+              console.log(error)
+            }
           }
         })
     },
