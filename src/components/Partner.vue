@@ -75,9 +75,9 @@
       }
     },
     created() {
-      this.profileImage = (this.profile.profileImage === undefined) ?
+      this.profileImage = (this.profile.profileURL === undefined) ?
         stockImage :
-        this.profile.profileImage
+        this.profile.profileURL
     },
   }
 

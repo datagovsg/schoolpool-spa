@@ -22,7 +22,7 @@
             <!-- Input grouping. Reference: https://bulma.io/2017/03/10/new-field-element/ -->
             <div class="field">
               <p class="control is-expanded has-icons-left">
-                <input class="input" disabled type="email" :placeholder="(profile.email === undefined ? profile.name: profile.email)">
+                <input class="input" disabled :placeholder="(profile.email === undefined ? profile.name: profile.email)">
                 <span class="icon is-small is-left">
                   <i class="fa fa-envelope"></i>
                 </span>
