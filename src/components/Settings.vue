@@ -22,7 +22,7 @@
             <!-- Input grouping. Reference: https://bulma.io/2017/03/10/new-field-element/ -->
             <div class="field">
               <p class="control is-expanded has-icons-left">
-                <input class="input" disabled :placeholder="(profile.email === undefined ? profile.name: profile.email)">
+                <input class="input" id="name" disabled :placeholder="(profile.email === undefined ? profile.name: profile.email)">
                 <span class="icon is-small is-left">
                   <i class="fa fa-envelope"></i>
                 </span>
@@ -35,14 +35,14 @@
                 </a>
               </p>
               <p class="control is-expanded">
-                <input :disabled="userExist" class="input" v-model="phoneNumber" type="number" placeholder="Mobile no.">
+                <input class="input" id="phoneNumber" :disabled="userExist" v-model="phoneNumber" type="number" placeholder="Mobile no.">
               </p>
             </div>
             <div class="field">
               <p class="control">
                 <vue-google-autocomplete
                   ref="address"
-                  id="map"
+                  id="address"
                   classname="input"
                   placeholder="Address"
                   v-on:placechanged="getAddressPlaceChanged"
@@ -56,6 +56,7 @@
               <div class="control is-expanded has-icons-left">
                 <label class="label">School</label>
                 <auto-complete placeholder="S. by name/region"
+                  id="school"
                   :suggestions="schools"
                   v-model="school"
                   @interface="getSelectedSchoolData($event)"
@@ -65,7 +66,7 @@
               <div class="control">
                 <label class="label">Children</label>
                 <span class="select is-fullwidth">
-                  <select disabled>
+                  <select id="children" disabled>
                     <option>1</option>
                     <option>2</option>
                     <option>3</option>
