@@ -17,14 +17,14 @@
 
       <div class="navbar-end">
         <div class="navbar-item">
-          <a class="navbar-item" href="#about">
+          <a class="navbar-item" href="#about" v-smooth-scroll>
             About
           </a>
-          <a class="navbar-item" href="#services">
-            Services
+          <a class="navbar-item" href="#how"  v-smooth-scroll>
+            How?
           </a>
-          <a class="navbar-item" href="#contact">
-            Contact
+          <a class="navbar-item" href="#contact"  v-smooth-scroll>
+            Feedback
           </a>
           <div v-if="!isLoggedIn">
             <button @click="login()" :disabled="!disabled" class="button is-primary">
