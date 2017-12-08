@@ -1,6 +1,6 @@
 <template>
   <div class="control is-expanded has-icons-left">
-    <input id="input-box" class="input" autocomplete="off" type="text" :placeholder="placeholder" :value="value" @input="updateValue($event.target.value)" @keydown.enter='enter'
+    <input :id="this.id" class="input" autocomplete="off" type="text" :placeholder="placeholder" :value="value" @input="updateValue($event.target.value)" @keydown.enter='enter'
       @keydown.down='down' @keydown.up='up' @blur="onBlur">
     <span class="icon is-small is-left">
       <i class="fa fa-graduation-cap" aria-hidden="true"></i>
@@ -18,6 +18,10 @@
     // Reference: http://fareez.info/blog/vuejs/create-your-own-autocomplete-using-vuejs-2/
     props: {
       value: {
+        type: String,
+        required: true,
+      },
+      id: {
         type: String,
         required: true,
       },

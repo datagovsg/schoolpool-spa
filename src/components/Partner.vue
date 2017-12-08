@@ -10,7 +10,7 @@
           </div>
           <div class="media-content">
             <p class="title is-4">{{profile.name}}</p>
-            <p class="subtitle is-6">{{profile.email}}</p>
+            <p class="subtitle is-6">+65 | {{profile.phoneNumber}}</p>
           </div>
         </div>
         <div class="content">
@@ -57,6 +57,8 @@
 </template>
 
 <script>
+  import * as SchoolSession from '../specs/sessions/school'
+
   const stockImage = require('../assets/user.png')
 
   export default {
@@ -78,6 +80,12 @@
       this.profileImage = (this.profile.profileURL === undefined) ?
         stockImage :
         this.profile.profileURL
+      SchoolSession.default(this.profile.schoolAddress[0]).then((res) => {
+        const { result = {} } = res.data
+        const { records = [] } = result
+        // Assume that a single postal code contains only 1 school
+        this.school = records[0].school_name
+      })
     },
   }
 

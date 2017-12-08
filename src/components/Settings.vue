@@ -53,7 +53,7 @@
               </p>
             </div>
             <div class="field is-grouped has-addons">
-              <div class="control is-expanded has-icons-left">
+              <p class="control is-expanded has-icons-left">
                 <label class="label">School</label>
                 <auto-complete placeholder="S. by name/region"
                   id="school"
@@ -62,19 +62,21 @@
                   @interface="getSelectedSchoolData($event)"
                 >
                 </auto-complete>
-              </div>
-              <div class="control">
-                <label class="label">Children</label>
-                <span class="select is-fullwidth">
-                  <select id="children" disabled>
-                    <option>1</option>
-                    <option>2</option>
-                    <option>3</option>
-                  </select>
-                </span>
+              </p>
+              <div class="field">
+                <p class="control">
+                  <label class="label">Children</label>
+                  <span class="select is-fullwidth">
+                    <select id="children" disabled>
+                      <option>1</option>
+                      <option>2</option>
+                      <option>3</option>
+                    </select>
+                  </span>
+                </p>
               </div>
             </div>
-            <div class="field is-grouped is-grouped-right">
+            <div class="is-grouped is-grouped-right">
               <div class="control">
                 <button class="button is-primary">Save</button>
               </div>
@@ -171,18 +173,20 @@
           try {
             jwtToken = localStorage.getItem('id_token')
           } catch (error) {
-            console.log(error)
+            // console.log(error)
+            throw (error)
           }
           // If user does not exist in database, perform a POST API registration request
           if (this.userExist === false) {
-            // Add user properties for user registration
             user.phoneNumber = this.phoneNumber
+            // Add user properties for user registration
             await UserSession.register(user, jwtToken).then((response) => {
               const { data = {} } = response
               updatedProfile = this.updateUserInformation(data.user)
               isSuccessful = true
             }).catch((error) => {
-              console.log(error.response)
+              // console.log(error.response)
+              throw (error.response)
             })
           } else {
             // Perform a PUT API update request
@@ -191,7 +195,8 @@
               updatedProfile = this.updateUserInformation(data.user)
               isSuccessful = true
             }).catch((error) => {
-              console.log(error.response)
+              // console.log(error.response)
+              throw (error.response)
             })
           }
           if (isSuccessful) {
@@ -217,7 +222,8 @@
           })
           this.zoom = 11
         }).catch((error) => {
-          console.log(error.response)
+          // console.log(error.response)
+          throw (error.response)
         })
       },
       removeMarker(name) {
@@ -264,17 +270,22 @@
         }
       },
       updateUserInformation(profile) {
-        const updatedProfile = Object.assign(this.profile, profile)
-        this.addMarker('user', updatedProfile.address)
-        // TODO: schoolAddress is an array and UI must cater to multiple schools
-        SchoolSession.default(updatedProfile.schoolAddress[0]).then(async (res) => {
-          const { result = {} } = res.data
-          const { records = [] } = result
-          // Assume that a single postal code contains only 1 school
-          this.school = records[0].school_name
-          this.phoneNumber = updatedProfile.phoneNumber
-          this.addMarker('school', records[0].postal_code)
-        })
+        let updatedProfile = null
+        if (!_.isEmpty(profile)) {
+          updatedProfile = Object.assign(this.profile, profile)
+          this.addMarker('user', updatedProfile.address)
+          // TODO: schoolAddress is an array and UI must cater to multiple schools
+          SchoolSession.default(updatedProfile.schoolAddress[0]).then((res) => {
+            const { result = {} } = res.data
+            const { records = [] } = result
+            // Assume that a single postal code contains only 1 school
+            this.school = records[0].school_name
+            this.phoneNumber = updatedProfile.phoneNumber
+            this.addMarker('school', records[0].postal_code)
+          }).catch((err) => {
+            throw err
+          })
+        }
         return updatedProfile
       },
       // Fetch school information base on school search query
@@ -289,7 +300,8 @@
           const { records = {} } = response.data.result
           vm.schools = records
         }).catch((error) => {
-          console.log(error.response)
+          // console.log(error.response)
+          throw (error.response)
         })
       }, 500),
     },
@@ -308,7 +320,7 @@
         zoom: 7,
       }
     },
-    async created() {
+    created() {
       // Check if user was a registered member by phone number
       if (this.profile.phoneNumber === undefined) {
         return

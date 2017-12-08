@@ -3,7 +3,7 @@
 // we are also using it with karma-webpack
 //   https://github.com/webpack/karma-webpack
 
-let webpackConfig = require('../../build/webpack.test.conf')
+const webpackConfig = require('../../build/webpack.test.conf')
 
 module.exports = function (config) {
   config.set({
@@ -13,14 +13,13 @@ module.exports = function (config) {
     // 2. add it to the `browsers` array below.
     browsers: [
       'PhantomJS',
-      // 'Chrome',
     ],
     frameworks: ['mocha', 'sinon-chai', 'phantomjs-shim'],
     reporters: ['spec', 'coverage'],
     // Karma, PhantomJS and es6 Promises. Reference: https://stackoverflow.com/questions/29391111/karma-phantomjs-and-es6-promises
     files: [
-      '../../node_modules/babel-polyfill/dist/polyfill.js',
-      './index.js', // could be /src/**/*.js
+      '../../node_modules/babel-polyfill/dist/polyfill.js ',
+      './index.js',
     ],
     preprocessors: {
       './index.js': ['webpack', 'sourcemap'],
@@ -37,4 +36,4 @@ module.exports = function (config) {
       ],
     },
   })
-};
+}

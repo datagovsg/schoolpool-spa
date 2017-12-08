@@ -30,6 +30,7 @@
           </div>
         </div>
       </div>
+      
     </section>
     <!-- <section id="about" class="section is-large has-text-centered">
       <div class="container">
