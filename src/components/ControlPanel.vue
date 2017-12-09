@@ -1,5 +1,6 @@
 <template>
   <div class="section admin-controller full-height">
+    <loading v-if="!profile"></loading>
     <div class="container">
       <div class="columns is-mobile">
         <div id="nav" class="side-nav column is-2">
@@ -29,8 +30,8 @@
             <div class="column is-12">
               <!-- TODO: Add data binding to do conditional rendering of warning -->
               <div class="notification is-warning">
-                <button class="delete"></button> Please navigate to
-                <a>Profile Settings</a> to update your personal information
+                <button class="delete" v-on:click="isActive = !isActive"></button> Please navigate to
+                <a href="/control-panel/settings">Profile Settings</a> to update your personal information
               </div>
             </div>
           </div>
@@ -40,8 +41,6 @@
             :pairedProfile="pairedProfile"
             @profileChanged="newProperties">
           </router-view>
-          <!-- TODO: Add loading page -->
-          <div v-else>Loading...</div>
         </div>
       </div>
     </div>
@@ -49,13 +48,18 @@
 </template>
 
 <script>
+  import _ from 'lodash'
+
+  import Loading from './Loading'
   import Dashboard from './Dashboard'
   import Settings from './Settings'
+
   import * as UserSession from '../specs/sessions/user'
   import * as Auth0Session from '../specs/sessions/auth0'
 
   export default {
     components: {
+      Loading,
       Dashboard,
       Settings,
     },
@@ -82,6 +86,7 @@
         isActive: false,
         profile: null,
         pairedProfile: null,
+        isLoading: true,
         currentComponent: this.$route.name,
       }
     },
@@ -108,12 +113,20 @@
           Auth0Session.default(sub, jwtToken)
             .then((res) => {
               this.profileImage = res.data.picture
+            }).catch((err) => {
+              throw err
+              // TODO: Handle error expection with error message hero
             })
-          // Get paired user profile basic information
-          UserSession.information(this.profile.pairedId, jwtToken)
-            .then((res) => {
-              this.pairedProfile = res.data.user
-            })
+          if (!_.isEmpty(this.profile.pairedId)) {
+            // Get paired user profile basic information
+            UserSession.information(this.profile.pairedId, jwtToken)
+              .then((res) => {
+                this.pairedProfile = res.data.user
+              }).catch((err) => {
+                throw err
+              // TODO: Handle error expection with error message hero
+              })
+          }
         })
         .catch((e) => {
           // User does not exist in the database

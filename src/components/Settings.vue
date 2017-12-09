@@ -40,16 +40,7 @@
             </div>
             <div class="field">
               <p class="control">
-                <vue-google-autocomplete
-                  ref="address"
-                  id="address"
-                  classname="input"
-                  placeholder="Address"
-                  v-on:placechanged="getAddressPlaceChanged"
-                  v-on:inputChange="getAddressInputChange"
-                  :country="['sg']"
-                >
-                </vue-google-autocomplete>
+                <input class="input" id="address" v-model="address" type="number" placeholder="Postal code">
               </p>
             </div>
             <div class="field is-grouped has-addons">
@@ -58,6 +49,7 @@
                 <auto-complete placeholder="S. by name/region"
                   id="school"
                   :suggestions="schools"
+                  searchParam="school_name"
                   v-model="school"
                   @interface="getSelectedSchoolData($event)"
                 >
@@ -78,7 +70,7 @@
             </div>
             <div class="is-grouped is-grouped-right">
               <div class="control">
-                <button class="button is-primary">Save</button>
+                <button class="button is-primary" :class="{ 'is-loading': inSubmitProcess }">Save</button>
               </div>
             </div>
           </form>
@@ -130,31 +122,41 @@
         }
         this.fetchSchools()
       },
+      async address(val) {
+        if (val === '' || val.length < this.FIX_STR_LENGTH) {
+          this.removeMarker('user')
+        } else if (val.length === this.FIX_STR_LENGTH) {
+          this.fetchAddress(val)
+        }
+      },
     },
     methods: {
       async onSubmit() {
+        this.inSubmitProcess = !this.inSubmitProcess
         // Check if input fields are empty
         if (this.address !== undefined && this.phoneNumber !== null && this.school !== '') {
-          const { placeResultData = {}, addressData = {} } = this.address
           let jwtToken = null
           let updatedProfile = null
           let isSuccessful = false
           let tempLat = null
           let tempLong = null
           let tempAddress = null
-          // Check if address is an empty object
-          if (_.isEmpty(this.address)) {
-            const { latlong = {}, address = '' } = this.profile
-            const [lat, long] = latlong.coordinates
-            tempLat = lat
-            tempLong = long
-            tempAddress = address
-          } else {
-            // User changed address location
-            tempLat = addressData.latitude
-            tempLong = addressData.longitude
-            tempAddress = placeResultData.formatted_address
-          }
+          // // Check if address is an empty object
+          // if (_.isEmpty(this.address)) {
+          //   const { latlong = {}, address = '' } = this.profile
+          //   const [lat, long] = latlong.coordinates
+          //   tempLat = lat
+          //   tempLong = long
+          //   tempAddress = address
+          // } else {
+          //   // User changed address location
+          //   // tempLat = addressData.latitude
+          //   // tempLong = addressData.longitude
+          //   tempAddress = this.address
+          // }
+          tempLat = this.location.lat
+          tempLong = this.location.lng
+          tempAddress = this.address
           // Validate school address array
           let tempSchoolAddress = []
           if (this.selectedSchool !== null) {
@@ -169,24 +171,22 @@
             tempLat,
             tempLong,
             tempSchoolAddress,
+            this.phoneNumber,
           )
           try {
             jwtToken = localStorage.getItem('id_token')
           } catch (error) {
-            // console.log(error)
-            throw (error)
+            console.log(error)
           }
           // If user does not exist in database, perform a POST API registration request
           if (this.userExist === false) {
-            user.phoneNumber = this.phoneNumber
             // Add user properties for user registration
             await UserSession.register(user, jwtToken).then((response) => {
               const { data = {} } = response
               updatedProfile = this.updateUserInformation(data.user)
               isSuccessful = true
             }).catch((error) => {
-              // console.log(error.response)
-              throw (error.response)
+              console.log(error.response)
             })
           } else {
             // Perform a PUT API update request
@@ -195,11 +195,11 @@
               updatedProfile = this.updateUserInformation(data.user)
               isSuccessful = true
             }).catch((error) => {
-              // console.log(error.response)
-              throw (error.response)
+              console.log(error.response)
             })
           }
           if (isSuccessful) {
+            this.inSubmitProcess = !this.inSubmitProcess
             this.profileChanged(updatedProfile)
             this.hasChanged = true
           }
@@ -208,23 +208,29 @@
       profileChanged(updatedProfile) {
         this.$emit('profileChanged', updatedProfile)
       },
-      addMarker(name, params) {
+      async addMarker(name, params, coord = null) {
         if (params === null || params === '') {
           return
         }
-        gMapSession.default(params).then((response) => {
-          const { location = {} } = response.data.results[0].geometry
-          // Remove existing marker before replacing it
-          this.removeMarker(name)
-          this.markers.push({
-            position: location,
-            name,
+        if (coord === null || coord === undefined) {
+          await gMapSession.default(params).then((response) => {
+            const result = response.data.results[0]
+            if (result !== undefined
+            && result.address_components[result.address_components.length - 1].short_name === 'SG') {
+              coord = result.geometry.location
+            }
+          }).catch((err) => {
+          // Invalid postal code coordinates
+            console.log(err)
           })
-          this.zoom = 11
-        }).catch((error) => {
-          // console.log(error.response)
-          throw (error.response)
+        }
+        // Remove existing marker before replacing it
+        this.removeMarker(name)
+        this.markers.push({
+          position: coord,
+          name,
         })
+        this.zoom = 10
       },
       removeMarker(name) {
         let index = 0
@@ -250,25 +256,6 @@
           this.removeMarker('school')
         }
       },
-      // Function called when user types in the address autocomplete input field
-      getAddressInputChange(data) {
-        const { newVal = {} } = data
-        if (newVal === '' || newVal.length < this.FIX_STR_LENGTH) {
-          this.removeMarker('user')
-        }
-      },
-      // Function called when user selects an option from the address autocomplete dropdown
-      getAddressPlaceChanged(addressData, placeResultData) {
-        this.address = {
-          placeResultData,
-          addressData,
-        }
-        if (addressData !== undefined && addressData !== null) {
-          this.addMarker('user', addressData.postal_code)
-        } else {
-          this.removeMarker('user')
-        }
-      },
       updateUserInformation(profile) {
         let updatedProfile = null
         if (!_.isEmpty(profile)) {
@@ -281,9 +268,11 @@
             // Assume that a single postal code contains only 1 school
             this.school = records[0].school_name
             this.phoneNumber = updatedProfile.phoneNumber
+            this.address = updatedProfile.address
+            this.location = updatedProfile.latlong.coordinates
             this.addMarker('school', records[0].postal_code)
           }).catch((err) => {
-            throw err
+            console.log(err)
           })
         }
         return updatedProfile
@@ -300,22 +289,36 @@
           const { records = {} } = response.data.result
           vm.schools = records
         }).catch((error) => {
-          // console.log(error.response)
-          throw (error.response)
+          console.log(error.response)
         })
       }, 500),
+      // Fetch address information base on postal code search query
+      async fetchAddress(postalCode) {
+        await gMapSession.default(postalCode).then((response) => {
+        // JSON responses are automatically parsed.
+          const { results = [] } = response.data
+          const { location = {} } = results[0].geometry
+          this.location = location
+          this.addMarker('user', postalCode, location)
+        }).catch((err) => {
+        // console.log(error.response)
+          console.log(err)
+        })
+      },
     },
     data() {
       return {
-        FIX_STR_LENGTH: 5,
+        FIX_STR_LENGTH: 6,
         school: '',
         address: '',
+        location: {},
         schools: [],
         markers: [],
         phoneNumber: null,
         selectedSchool: null,
         userExist: false,
         hasChanged: false,
+        inSubmitProcess: false,
         center: { lat: 1.3521, lng: 103.8198 },
         zoom: 7,
       }
@@ -329,9 +332,6 @@
       this.userExist = !this.userExist
       // Update form information
       this.updateUserInformation(this.profile)
-    },
-    mounted() {
-      this.$refs.address.update(this.profile.address)
     },
   }
 

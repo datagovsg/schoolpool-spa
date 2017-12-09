@@ -1,6 +1,6 @@
 <template>
   <div>
-    <section id="top" class="hero is-fullheight">
+    <section id="top" class="hero is-fullheight is-info is-bold">
       <div class="hero-body">
         <div class="container has-text-centered">
           <h1 class="title">
@@ -12,46 +12,9 @@
         </div>
       </div>
     </section>
-    <!-- <section id="about" class="hero is-fullheight">
-      <div class="hero-body">
-        <div class="container has-text-centered">
-          <h1 class="title is-1">
-            🚌~About~🚌
-          </h1>
-          <br>
-          <div class="columns has-text-left is-centered">
-            <div class="column is-4">
-              <div class="content">
-                <p class="subtitle"></p>
-              </div>
-            </div>
-            <div class="column is-4">
-              <p class="subtitle">Our main goal is to lessen the traffic leading up to school as well as provifing parrents an elternative mode of transports for their kids</p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section> -->
-    <!-- <section id="about" class="section is-large has-text-centered">
-      <div class="container">
-        <h1 class="title">About</h1>
-        <div class="columns has-text-left is-centered">
-          <div class="column is-3">
-            <div class="content">
-              <p>SchoolPool is a solution that facilitates parents sending their children to school, by carpooling in-line with car-lite policy.</p>
-            </div>
-          </div>
-          <div class="column is-3">
-            Second column
-          </div>
-        </div>
-      </div>
-    </section> -->
-
     <section id="about" class="section hero is-medium has-text-centered">
       <div class="container">
-        <h1 class="title">WHY?</h1>
-        <h4 class="subtitle is-6">Reduce traffic around school and provide an alternative mode of transport for their kids</h4>
+        <h1 class="title">About</h1>
         <hr class="center-hr">
         <div class="columns features">
           <div class="column is-4">
@@ -59,7 +22,7 @@
               <div class="card-content">
                 <div class="content">
                   <h4>Complementary</h4>
-                  <p>SchoolPool is completely free for you to use with no hidden fees whatsoever.</p>
+                  <p>SchoolPool is completely <strong>free</strong> for you to use with no hidden fees whatsoever.</p>
                   <p>
                     <a href="https://en.oxforddictionaries.com/definition/complementary">Learn more</a>
                   </p>
@@ -72,7 +35,7 @@
               <div class="card-content">
                 <div class="content">
                   <h4>Simple</h4>
-                  <p>SchoolPool is simple and easy to use!<br> With 3 easy steps your child will be carpooling in no time</p>
+                  <p>SchoolPool is simple and easy to use! With just<br/><strong>3 easy steps</strong>, your child will be carpooling to school in no time.</p>
                   <p>
                     <a href="#how" v-smooth-scroll>Tell me more !</a>
                   </p>
@@ -85,7 +48,7 @@
               <div class="card-content">
                 <div class="content">
                   <h4>Collaborative</h4>
-                  <p>Schoolpool collaborates with school to provide the best fit your carpooling needs.</p>
+                  <p>With the mission to reduce traffic around school and provide an alternative mode of transport for their kids, Schoolpool collaborates with schools to provide the best fit your carpooling needs.</p>
                   <p>
                     <a href="https://en.oxforddictionaries.com/definition/collaborative">Learn more</a>
                   </p>
@@ -141,11 +104,12 @@
   border-radius: 3px
 .center-hr
   margin: 50px auto
-  width: 50%
+  width: 20%
   max-width: 50%
-#top
-  background-image: url("../assets/cars.png")
-  background-size: cover
-  background-repeat: no-repeat
-  background-position: center center
+  #top
+  // background-image: url("../assets/cars.png")
+  // background-size: cover
+  // background-repeat: no-repeat
+  // background-position: center center
 </style>
+
