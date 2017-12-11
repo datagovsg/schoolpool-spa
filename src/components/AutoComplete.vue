@@ -1,13 +1,13 @@
 <template>
   <div class="control is-expanded has-icons-left">
-    <input id="input-box" class="input" autocomplete="off" type="text" :placeholder="placeholder" :value="value" @input="updateValue($event.target.value)" @keydown.enter='enter'
+    <input :id="this.id" class="input" autocomplete="off" type="text" :placeholder="placeholder" :value="value" @input="updateValue($event.target.value)" @keydown.enter='enter'
       @keydown.down='down' @keydown.up='up' @blur="onBlur">
     <span class="icon is-small is-left">
       <i class="fa fa-graduation-cap" aria-hidden="true"></i>
     </span>
     <ul class="menu-list dropdown-list" :class="{'hide':!openSuggestion}">
       <li v-for="(match, index) in matches" :key="match.index" @click="suggestionClick(index)">
-        <a :class="{'is-active': isActive(index)}">{{ match.school_name}}</a>
+        <a :class="{'is-active': isActive(index)}">{{ match[searchParam]}}</a>
       </li>
     </ul>
   </div>
@@ -21,9 +21,18 @@
         type: String,
         required: true,
       },
+      id: {
+        type: String,
+        required: true,
+      },
       suggestions: {
         type: Array,
         required: true,
+      },
+      searchParam: {
+        type: String,
+        required: true,
+        default: '',
       },
       placeholder: {
         type: String,
@@ -62,7 +71,7 @@
       // When enter key pressed on the input
       enter() {
         if (this.matches.length !== 0) {
-          this.$emit('input', this.matches[this.current].school_name)
+          this.$emit('input', this.matches[this.current][this.searchParam])
           this.$emit('interface', this.matches[this.current])
           this.open = false
         }
@@ -93,7 +102,7 @@
 
       // When one of the suggestion is clicked
       suggestionClick(index) {
-        this.$emit('input', this.matches[index].school_name)
+        this.$emit('input', this.matches[index][this.searchParam])
         this.$emit('interface', this.matches[index])
         this.open = false
       },
