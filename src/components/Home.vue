@@ -37,7 +37,7 @@
                   <h4>Simple</h4>
                   <p>SchoolPool is simple and easy to use! With just<br/><strong>3 easy steps</strong>, your child will be carpooling to school in no time.</p>
                   <p>
-                    <a href="#how" v-smooth-scroll>Tell me more !</a>
+                    <a href="#how" v-smooth-scroll>Learn more</a>
                   </p>
                 </div>
               </div>
@@ -62,21 +62,21 @@
     <section id="how" class="section hero is-light is-medium has-text-centered">
       <div class="container">
         <h1 class="title">How does it work?</h1>
-        <br>
-        <div class="columns is-centered">
+        <hr class="center-hr">
+        <div class="columns is-centered" id="processColumns">
           <div class="column is-3">
             <div class="image rounded-div">
               <img class="image" src="../assets/login.png" alt="visiting the webpage"/>
             </div>
             <p>Step 1: Login via Google or Facebook.</p>
           </div>
-          <div class="column is-3" style="margin-left:50px;">
+          <div class="column is-3">
             <div class="image rounded-div">
               <img class="image" src="../assets/register.png" alt="visiting the webpage"/>
             </div>
             <p>Step 2: Enter your credentials in the settings page.</p>
           </div>
-          <div class="column is-3" style="margin-left:50px;">
+          <div class="column is-3">
             <div class="image rounded-div">
               <img class="image" src="../assets/notification.png" alt="visiting the webpage"/>
             </div>
@@ -88,14 +88,69 @@
     <section id="contact" class="section hero is-medium has-text-centered">
       <div class="container">
         <h1 class="title">Feedback</h1>
+        <hr class="center-hr">
+        <form>
+          <div class="field has-addons">
+            <p class="control">
+              <span class="select is-medium">
+                <select>
+                  <option>Mr</option>
+                  <option>Ms</option>
+                  <option>Mrs</option>
+                  <option>Dr</option>
+                </select>
+              </span>
+            </p>
+            <p class="control is-expanded">
+              <input class="input is-medium" type="text" v-model="name" placeholder="Name">
+            </p>
+          </div>
+          <div class="field">
+            <div class="control is-expanded">
+              <input class="input is-medium" type="email" v-model="email" placeholder="Email">
+            </div>
+          </div>
+          <div class="field">
+            <div class="control is-expanded">
+              <textarea class="textarea" v-model="feedback" placeholder="Feedback"></textarea>
+            </div>
+          </div>
+          <div class="control">
+            <button @click="sendEmail" class="button is-primary is-medium">Submit</button>
+          </div>
+          <div class="g-recaptcha" data-sitekey="6Lf8gDwUAAAAAD6ZV3WLu52ZpqQBQeFfOpGb86OJ"></div>
+        </form>
       </div>
     </section>
   </div>
 </template>
 
 <script>
-  export default {}
-
+/* global emailjs:true */
+export default {
+  data() {
+    return {
+      name: '',
+      email: '',
+      feedback: '',
+    }
+  },
+  created() {
+    emailjs.init('user_bVIXBERH3cmUAOMvLaONo')
+  },
+  methods: {
+    sendEmail() {
+      // parameters: service_id, template_id, template_parameters
+      const emailObject = {
+        reply_to: this.email,
+        from_name: 'SchoolPool',
+        to_name: this.name,
+        message_html: 'hello',
+      }
+      emailjs.send('gmail', 'template_2It6pSrx', emailObject)
+    },
+  },
+}
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->

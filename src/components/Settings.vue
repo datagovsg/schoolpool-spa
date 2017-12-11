@@ -138,25 +138,6 @@
           let jwtToken = null
           let updatedProfile = null
           let isSuccessful = false
-          let tempLat = null
-          let tempLong = null
-          let tempAddress = null
-          // // Check if address is an empty object
-          // if (_.isEmpty(this.address)) {
-          //   const { latlong = {}, address = '' } = this.profile
-          //   const [lat, long] = latlong.coordinates
-          //   tempLat = lat
-          //   tempLong = long
-          //   tempAddress = address
-          // } else {
-          //   // User changed address location
-          //   // tempLat = addressData.latitude
-          //   // tempLong = addressData.longitude
-          //   tempAddress = this.address
-          // }
-          tempLat = this.location.lat
-          tempLong = this.location.lng
-          tempAddress = this.address
           // Validate school address array
           let tempSchoolAddress = []
           if (this.selectedSchool !== null) {
@@ -167,9 +148,9 @@
           // Construct user object for registration/update
           const user = new User(
             this.profile.name,
-            tempAddress,
-            tempLat,
-            tempLong,
+            this.address,
+            this.location.lat,
+            this.location.lng,
             tempSchoolAddress,
             this.phoneNumber,
           )
