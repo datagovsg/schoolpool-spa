@@ -89,7 +89,12 @@
       <div class="container">
         <h1 class="title">Feedback</h1>
         <hr class="center-hr">
-        <form>
+        <transition name="fade">
+        <div v-if="hasSent" :class="[isSuccessful ? 'is-primary' : 'is-danger', 'notification']">
+          <button class="delete" v-on:click="hasSent = !hasSent"></button> {{ feedbackResponse }}
+        </div>
+        </transition>
+        <form @submit.prevent="onSubmit">
           <div class="field has-addons">
             <p class="control">
               <span class="select is-medium">
@@ -102,13 +107,15 @@
               </span>
             </p>
             <p class="control is-expanded">
-              <input class="input is-medium" type="text" v-model="name" placeholder="Name">
+              <input v-validate="'required|alpha'" :class="{ 'is-medium': true, 'input': true, 'is-danger': errors.has('name') }" name="name" type="text" v-model="name" placeholder="Name">
+              <span v-show="errors.has('name')" class="help is-danger">{{ errors.first('name') }}</span>
             </p>
           </div>
           <div class="field">
-            <div class="control is-expanded">
-              <input class="input is-medium" type="email" v-model="email" placeholder="Email">
-            </div>
+            <p :class="{ 'control': true }">
+              <input v-validate="'required|email'" :class="{ 'is-medium': true, 'input': true, 'is-danger': errors.has('email') }" name="email" type="text" v-model="email" placeholder="Email">
+              <span v-show="errors.has('email')" class="help is-danger">{{ errors.first('email') }}</span>
+            </p>
           </div>
           <div class="field">
             <div class="control is-expanded">
@@ -116,9 +123,9 @@
             </div>
           </div>
           <div class="control">
-            <button @click="sendEmail" class="button is-primary is-medium">Submit</button>
+            <div class="g-recaptcha" data-sitekey="6Lf8gDwUAAAAAD6ZV3WLu52ZpqQBQeFfOpGb86OJ"></div>
+            <button id="feedbackBtn" class="button is-primary is-medium" :class="{ 'is-loading': inSubmitProcess }">Submit</button>
           </div>
-          <div class="g-recaptcha" data-sitekey="6Lf8gDwUAAAAAD6ZV3WLu52ZpqQBQeFfOpGb86OJ"></div>
         </form>
       </div>
     </section>
@@ -127,27 +134,55 @@
 
 <script>
 /* global emailjs:true */
+
+import moment from 'moment'
+
 export default {
   data() {
     return {
       name: '',
       email: '',
       feedback: '',
+      feedbackResponse: '',
+      inSubmitProcess: false,
+      isSuccessful: false,
+      hasSent: false,
     }
   },
   created() {
     emailjs.init('user_bVIXBERH3cmUAOMvLaONo')
   },
   methods: {
-    sendEmail() {
-      // parameters: service_id, template_id, template_parameters
-      const emailObject = {
-        reply_to: this.email,
-        from_name: 'SchoolPool',
-        to_name: this.name,
-        message_html: 'hello',
-      }
-      emailjs.send('gmail', 'template_2It6pSrx', emailObject)
+    onSubmit() {
+      this.$validator.validateAll().then((result) => {
+        if (result) {
+          // parameters: service_id, template_id, template_parameters
+          this.inSubmitProcess = !this.inSubmitProcess
+          const emailObject = {
+            reply_to: this.email,
+            from_name: 'SchoolPool',
+            to_name: this.name,
+            message_html: this.feedback,
+            date: moment().format('MMMM Do YYYY, h:mm:ss a'),
+          }
+          emailjs.send('gmail', 'template_2It6pSrx', emailObject)
+            .then(() => {
+              this.hasSent = !this.hasSent
+              this.inSubmitProcess = !this.inSubmitProcess
+              this.isSuccessful = true
+              this.feedbackResponse = 'Feedback has been successfully sent!'
+              document.getElementById('feedbackBtn').innerText = 'Sent'
+            }, (err) => {
+              this.hasSent = !this.hasSent
+              this.inSubmitProcess = !this.inSubmitProcess
+              const message = JSON.parse(err.text)
+              this.feedbackResponse = message.error
+            })
+          return
+        }
+        this.hasSent = !this.hasSent
+        this.feedbackResponse = 'Please ensure that all input fields are filled.'
+      })
     },
   },
 }

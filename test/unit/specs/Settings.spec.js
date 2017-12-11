@@ -23,6 +23,7 @@ describe('Settings.vue', () => {
     it('renders the profile\'s information in the respective form input fields', () => {
       const formElementsArray = wrapper.findAll('form div.field input').wrappers
       expect(formElementsArray.length).to.equal(4)
+      console.log(formElementsArray)
       for (let i = 0; i < formElementsArray.length; i++) {
         const inputElement = formElementsArray[i]
         console.log(inputElement.element)

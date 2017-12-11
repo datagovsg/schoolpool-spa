@@ -14,9 +14,9 @@
       <div class="columns">
         <div class="column is-6">
           <transition name="fade">
-          <div v-if="hasChanged" class="notification is-primary">
-            <button class="delete" v-on:click="hasChanged = !hasChanged"></button> Your data has been updated
-          </div>
+          <div v-if="hasChanged" :class="[isSuccessful ? 'is-primary' : 'is-danger', 'notification']">
+          <button class="delete" v-on:click="hasChanged = !hasChanged"></button> {{ response }}
+        </div>
           </transition>
           <form @submit.prevent="onSubmit">
             <!-- Input grouping. Reference: https://bulma.io/2017/03/10/new-field-element/ -->
@@ -137,7 +137,7 @@
         if (this.address !== undefined && this.phoneNumber !== null && this.school !== '') {
           let jwtToken = null
           let updatedProfile = null
-          let isSuccessful = false
+          let errors = []
           // Validate school address array
           let tempSchoolAddress = []
           if (this.selectedSchool !== null) {
@@ -165,25 +165,28 @@
             await UserSession.register(user, jwtToken).then((response) => {
               const { data = {} } = response
               updatedProfile = this.updateUserInformation(data.user)
-              isSuccessful = true
+              this.isSuccessful = true
             }).catch((error) => {
-              console.log(error.response)
+              errors = error.response.data.errorMessage
             })
           } else {
             // Perform a PUT API update request
             await UserSession.update(user, jwtToken).then((response) => {
               const { data = {} } = response
               updatedProfile = this.updateUserInformation(data.user)
-              isSuccessful = true
+              this.isSuccessful = true
             }).catch((error) => {
-              console.log(error.response)
+              errors = error.response.data.errorMessage
             })
           }
-          if (isSuccessful) {
-            this.inSubmitProcess = !this.inSubmitProcess
+          if (this.isSuccessful) {
+            this.response = 'data has been updated successfully!'
             this.profileChanged(updatedProfile)
-            this.hasChanged = true
+          } else {
+            this.response = errors.join()
           }
+          this.hasChanged = true
+          this.inSubmitProcess = !this.inSubmitProcess
         }
       },
       profileChanged(updatedProfile) {
@@ -292,6 +295,7 @@
         FIX_STR_LENGTH: 6,
         school: '',
         address: '',
+        response: '',
         location: {},
         schools: [],
         markers: [],
@@ -300,6 +304,7 @@
         userExist: false,
         hasChanged: false,
         inSubmitProcess: false,
+        isSuccessful: false,
         center: { lat: 1.3521, lng: 103.8198 },
         zoom: 7,
       }

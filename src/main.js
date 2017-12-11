@@ -3,12 +3,14 @@
 import Vue from 'vue'
 
 import vueSmoothScroll from 'vue-smooth-scroll'
+import VeeValidate from 'vee-validate'
 import App from './App'
 import router from './router'
 import store from './store'
 
 Vue.config.productionTip = true
 Vue.use(vueSmoothScroll)
+Vue.use(VeeValidate)
 
 /* eslint-disable no-new */
 new Vue({
