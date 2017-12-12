@@ -15,6 +15,7 @@
     <section id="about" class="section hero is-medium has-text-centered">
       <div class="container">
         <h1 class="title">About</h1>
+        <!-- <p class="subtitle">With the mission of reducing traffic around schools and provide an alternative mode of transport for students</p> -->
         <hr class="center-hr">
         <div class="columns features">
           <div class="column is-4">
@@ -23,9 +24,6 @@
                 <div class="content">
                   <h4>Complementary</h4>
                   <p>SchoolPool is completely <strong>free</strong> for you to use with no hidden fees whatsoever.</p>
-                  <p>
-                    <a href="https://en.oxforddictionaries.com/definition/complementary">Learn more</a>
-                  </p>
                 </div>
               </div>
             </div>
@@ -48,10 +46,8 @@
               <div class="card-content">
                 <div class="content">
                   <h4>Collaborative</h4>
-                  <p>With the mission to reduce traffic around school and provide an alternative mode of transport for their kids, Schoolpool collaborates with schools to provide the best fit your carpooling needs.</p>
-                  <p>
-                    <a href="https://en.oxforddictionaries.com/definition/collaborative">Learn more</a>
-                  </p>
+                  <!-- Schoolpool collaborates with schools to ensure that profiles are genuine and to provide parents with an ease of mind. -->
+                  <p><i> - Coming soon - </i></p>
                 </div>
               </div>
             </div>
@@ -107,7 +103,7 @@
               </span>
             </p>
             <p class="control is-expanded">
-              <input v-validate="'required|alpha'" :class="{ 'is-medium': true, 'input': true, 'is-danger': errors.has('name') }" name="name" type="text" v-model="name" placeholder="Name">
+              <input v-validate="'required'" :class="{ 'is-medium': true, 'input': true, 'is-danger': errors.has('name') }" name="name" type="text" v-model="name" placeholder="Name">
               <span v-show="errors.has('name')" class="help is-danger">{{ errors.first('name') }}</span>
             </p>
           </div>
