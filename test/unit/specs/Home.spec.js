@@ -1,5 +1,5 @@
-import { shallow } from 'vue-test-utils'
-import Home from '@/components/Home'
+// import { shallow } from 'vue-test-utils'
+// import Home from '@/components/Home'
 
 // describe('Home.vue', () => {
 //   it('should render correct title', () => {

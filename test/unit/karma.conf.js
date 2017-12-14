@@ -13,12 +13,13 @@ module.exports = function (config) {
     // 2. add it to the `browsers` array below.
     browsers: [
       'PhantomJS',
+      'Chrome',
     ],
     frameworks: ['mocha', 'sinon-chai', 'phantomjs-shim'],
     reporters: ['spec', 'coverage'],
     // Karma, PhantomJS and es6 Promises. Reference: https://stackoverflow.com/questions/29391111/karma-phantomjs-and-es6-promises
     files: [
-      '../../node_modules/babel-polyfill/dist/polyfill.js ',
+      '../../node_modules/babel-polyfill/dist/polyfill.js',
       './index.js',
     ],
     preprocessors: {

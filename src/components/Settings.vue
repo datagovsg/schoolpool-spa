@@ -22,7 +22,7 @@
             <!-- Input grouping. Reference: https://bulma.io/2017/03/10/new-field-element/ -->
             <div class="field">
               <p class="control is-expanded has-icons-left">
-                <input class="input" id="name" disabled :placeholder="(profile.email === undefined ? profile.name: profile.email)">
+                <input class="input" id="name" disabled :placeholder="(!this.userExist ? profile.name: profile.email)">
                 <span class="icon is-small is-left">
                   <i class="fa fa-envelope"></i>
                 </span>
@@ -132,12 +132,11 @@
     },
     methods: {
       async onSubmit() {
-        this.inSubmitProcess = !this.inSubmitProcess
         // Check if input fields are empty
-        if (this.address !== undefined && this.phoneNumber !== null && this.school !== '') {
+        if (this.address !== undefined && this.phoneNumber !== null && this.school.trim() !== '') {
+          this.inSubmitProcess = !this.inSubmitProcess
           let jwtToken = null
           let updatedProfile = null
-          let errors = []
           // Validate school address array
           let tempSchoolAddress = []
           if (this.selectedSchool !== null) {
@@ -154,40 +153,47 @@
             tempSchoolAddress,
             this.phoneNumber,
           )
+  
           try {
             jwtToken = localStorage.getItem('id_token')
+            updatedProfile = await this.submitProfileHandler(user, jwtToken)
           } catch (error) {
             console.log(error)
           }
-          // If user does not exist in database, perform a POST API registration request
-          if (this.userExist === false) {
-            // Add user properties for user registration
-            await UserSession.register(user, jwtToken).then((response) => {
-              const { data = {} } = response
-              updatedProfile = this.updateUserInformation(data.user)
-              this.isSuccessful = true
-            }).catch((error) => {
-              errors = error.response.data.errorMessage
-            })
-          } else {
-            // Perform a PUT API update request
-            await UserSession.update(user, jwtToken).then((response) => {
-              const { data = {} } = response
-              updatedProfile = this.updateUserInformation(data.user)
-              this.isSuccessful = true
-            }).catch((error) => {
-              errors = error.response.data.errorMessage
-            })
-          }
+
           if (this.isSuccessful) {
             this.response = 'data has been updated successfully!'
             this.profileChanged(updatedProfile)
           } else {
-            this.response = errors.join()
+            this.response = this.errors.join()
           }
-          this.hasChanged = true
+          this.hasChanged = !this.hasChanged
           this.inSubmitProcess = !this.inSubmitProcess
+        } else {
+          this.response = 'Input fields are empty. Please fill them up and try again.'
+          this.hasChanged = !this.hasChanged
         }
+      },
+      async submitProfileHandler(user, jwtToken) {
+        // If user does not exist in database, perform a POST API registration request
+        let profile = null
+        if (this.userExist === false) {
+          // Add user properties for user registration
+          await UserSession.register(user, jwtToken).then((response) => {
+            profile = this.updateProfileInformation(response.data.user)
+          }).catch((error) => {
+            this.errors = error.response.data.errorMessage
+          })
+        } else {
+          // Perform a PUT API update request
+          await UserSession.update(user, jwtToken).then((response) => {
+            profile = this.updateProfileInformation(response.data.user)
+          }).catch((error) => {
+            this.errors = error.response.data.errorMessage
+          })
+        }
+        this.isSuccessful = true
+        return profile
       },
       profileChanged(updatedProfile) {
         this.$emit('profileChanged', updatedProfile)
@@ -240,7 +246,8 @@
           this.removeMarker('school')
         }
       },
-      updateUserInformation(profile) {
+      // Update profile's information. Including data values
+      updateProfileInformation(profile) {
         let updatedProfile = null
         if (!_.isEmpty(profile)) {
           updatedProfile = Object.assign(this.profile, profile)
@@ -317,7 +324,7 @@
       // User exist in the database
       this.userExist = !this.userExist
       // Update form information
-      this.updateUserInformation(this.profile)
+      this.updateProfileInformation(this.profile)
     },
   }
 
