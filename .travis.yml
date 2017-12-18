@@ -2,4 +2,4 @@ language: node_js
 node_js:
   - "8" 
 script:
-  - cross-env BABEL_ENV=test karma start test/unit/karma.conf.js
+  - cross-env BABEL_ENV=test karma start test/unit/karma.conf.js --single-run=true
