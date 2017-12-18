@@ -107,6 +107,7 @@ describe('Settings.vue', () => {
       expect(spy.calledWith(updatedProfile)).to.equal(true)
       spy.restore()
       SchoolSession.default.restore()
+      addMarkerStub.restore()
       done()
     })
 
@@ -144,6 +145,7 @@ describe('Settings.vue', () => {
         expect(wrapper.vm.response).to.equal('data has been updated successfully!')
         submitProfileHandlerStub.restore()
         schoolSessionStub.restore()
+        addMarkerStub.restore()
         done()
       })
     })
