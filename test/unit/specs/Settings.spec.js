@@ -2,6 +2,7 @@ import { mount, shallow } from 'vue-test-utils'
 import { expect } from 'chai'
 import sinon from 'sinon'
 import _ from 'lodash'
+import Vue from 'vue'
 
 import Settings from '@/components/Settings'
 import User from '../../../src/specs/models/User'
@@ -117,7 +118,7 @@ describe('Settings.vue', () => {
       done()
     })
 
-    it('should successfully update profile object after save button is clicked', async () => {
+    it('should successfully update profile object after save button is clicked', (done) => {
       const submitProfileHandlerStub = sinon.stub(Settings.methods, 'submitProfileHandler')
       const schoolSessionStub = sinon.stub(SchoolSession, 'default')
       const wrapper = prepMount(
@@ -133,10 +134,12 @@ describe('Settings.vue', () => {
       wrapper.vm.school = 'FAIRFIELD'
       // // Trigger click event of submit button
       wrapper.find('button').trigger('click')
-      await setTimeout(() => {}, 10)
-      expect(wrapper.vm.response).to.equal('data has been updated successfully!')
-      submitProfileHandlerStub.restore()
-      schoolSessionStub.restore()
+      Vue.nextTick(() => {
+        expect(wrapper.vm.response).to.equal('data has been updated successfully!')
+        submitProfileHandlerStub.restore()
+        schoolSessionStub.restore()
+        done()
+      })
     })
   })
 })
