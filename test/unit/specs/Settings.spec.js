@@ -91,9 +91,13 @@ describe('Settings.vue', () => {
     it('calls updateProfileInformation before mount and profile object is not empty', (done) => {
       const spy = sinon.spy(Settings.methods, 'updateProfileInformation')
       const schoolSessionStub = sinon.stub(SchoolSession, 'default')
+      const addMarkerStub = sinon.stub(Settings.methods, 'addMarker')
       const wrapper = prepMount(
         { profile: updatedProfile },
-        [{ obj: schoolSessionStub, data: schoolResponse }],
+        [
+          { obj: schoolSessionStub, data: schoolResponse },
+          { obj: addMarkerStub },
+        ],
         false,
       )
       // Check for component props
@@ -121,11 +125,13 @@ describe('Settings.vue', () => {
     it('should successfully update profile object after save button is clicked', (done) => {
       const submitProfileHandlerStub = sinon.stub(Settings.methods, 'submitProfileHandler')
       const schoolSessionStub = sinon.stub(SchoolSession, 'default')
+      const addMarkerStub = sinon.stub(Settings.methods, 'addMarker')
       const wrapper = prepMount(
         { profile: updatedProfile },
         [
           { obj: submitProfileHandlerStub, data: updatedProfile },
           { obj: schoolSessionStub, data: schoolResponse },
+          { obj: addMarkerStub },
         ],
       )
       // Update form required fields
