@@ -13,8 +13,7 @@ module.exports = function (config) {
     // 2. add it to the `browsers` array below.
     browsers: [
       'PhantomJS',
-      'Chrome',
-      // --browsers=Chrome --single-run=false --auto-watch,
+      // 'Chrome',
     ],
     frameworks: ['mocha', 'sinon-chai', 'phantomjs-shim'],
     reporters: ['spec', 'coverage'],
