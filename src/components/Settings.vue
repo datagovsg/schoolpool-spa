@@ -18,11 +18,11 @@
           <button class="delete" v-on:click="hasChanged = !hasChanged"></button> {{ response }}
         </div>
           </transition>
-          <form @submit.prevent="onSubmit">
+          <form>
             <!-- Input grouping. Reference: https://bulma.io/2017/03/10/new-field-element/ -->
             <div class="field">
               <p class="control is-expanded has-icons-left">
-                <input class="input" id="name" disabled :placeholder="(!this.userExist ? profile.name: profile.email)">
+                <input class="input" id="name" disabled :placeholder="(this.userExist ? profile.name: profile.email)">
                 <span class="icon is-small is-left">
                   <i class="fa fa-envelope"></i>
                 </span>
@@ -35,6 +35,8 @@
                 </a>
               </p>
               <p class="control is-expanded">
+                <!-- <input v-validate="'required|phoneNumber'" :class="{ 'input': true, 'is-danger': errors.has('phoneNumber') }" name="phoneNumber" id="phoneNumber" :disabled="userExist" v-model="phoneNumber" type="number" placeholder="Mobile no.">
+                <span v-show="errors.has('phoneNumber')" class="help is-danger">{{ errors.first('phoneNumber') }}</span> -->
                 <input class="input" id="phoneNumber" :disabled="userExist" v-model="phoneNumber" type="number" placeholder="Mobile no.">
               </p>
             </div>
@@ -70,7 +72,7 @@
             </div>
             <div class="is-grouped is-grouped-right">
               <div class="control">
-                <button class="button is-primary" :class="{ 'is-loading': inSubmitProcess }">Save</button>
+                <button @click="onSubmit" class="button is-primary" :class="{ 'is-loading': inSubmitProcess }">Save</button>
               </div>
             </div>
           </form>
@@ -131,7 +133,8 @@
       },
     },
     methods: {
-      async onSubmit() {
+      async onSubmit(e) {
+        e.preventDefault()
         // Check if input fields are empty
         if (this.address !== undefined && this.phoneNumber !== null && this.school.trim() !== '') {
           this.inSubmitProcess = !this.inSubmitProcess
@@ -161,7 +164,7 @@
             console.log(error)
           }
 
-          if (this.isSuccessful) {
+          if (updatedProfile !== null) {
             this.response = 'data has been updated successfully!'
             this.profileChanged(updatedProfile)
           } else {
@@ -192,7 +195,6 @@
             this.errors = error.response.data.errorMessage
           })
         }
-        this.isSuccessful = true
         return profile
       },
       profileChanged(updatedProfile) {
@@ -262,6 +264,7 @@
             this.address = updatedProfile.address
             this.location = updatedProfile.latlong.coordinates
             this.addMarker('school', records[0].postal_code)
+            return updatedProfile
           }).catch((err) => {
             console.log(err)
           })
@@ -311,7 +314,6 @@
         userExist: false,
         hasChanged: false,
         inSubmitProcess: false,
-        isSuccessful: false,
         center: { lat: 1.3521, lng: 103.8198 },
         zoom: 7,
       }
