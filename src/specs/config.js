@@ -16,6 +16,12 @@ const config = {
     callbackURL: `${window.location.origin}/callback`,
     audience: 'https://schoolpool.auth0.com/userinfo',
   },
+  emailJS: {
+    userID: 'user_bVIXBERH3cmUAOMvLaONo',
+  },
+  gRecaptcha: {
+    siteKey: '6Lf8gDwUAAAAAD6ZV3WLu52ZpqQBQeFfOpGb86OJ',
+  },
 }
 
 export default config

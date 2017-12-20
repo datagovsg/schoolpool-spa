@@ -103,23 +103,23 @@
               </span>
             </p>
             <p class="control is-expanded">
-              <input v-validate="'required'" :class="{ 'is-medium': true, 'input': true, 'is-danger': errors.has('name') }" name="name" type="text" v-model="name" placeholder="Name">
+              <input v-validate="'required'" :class="{ 'is-medium': true, 'input': true, 'is-danger': errors.has('name') }" name="name" id="nameInput" type="text" v-model="name" placeholder="Name">
               <span v-show="errors.has('name')" class="help is-danger">{{ errors.first('name') }}</span>
             </p>
           </div>
           <div class="field">
             <p :class="{ 'control': true }">
-              <input v-validate="'required|email'" :class="{ 'is-medium': true, 'input': true, 'is-danger': errors.has('email') }" name="email" type="text" v-model="email" placeholder="Email">
+              <input v-validate="'required|email'" :class="{ 'is-medium': true, 'input': true, 'is-danger': errors.has('email') }" name="email" id="emailInput" type="text" v-model="email" placeholder="Email">
               <span v-show="errors.has('email')" class="help is-danger">{{ errors.first('email') }}</span>
             </p>
           </div>
           <div class="field">
             <div class="control is-expanded">
-              <textarea class="textarea" v-model="feedback" placeholder="Feedback"></textarea>
+              <textarea class="textarea" id="feedbackTextArea" v-model="feedback" placeholder="Feedback"></textarea>
             </div>
           </div>
           <div class="control">
-            <div class="g-recaptcha" data-sitekey="6Lf8gDwUAAAAAD6ZV3WLu52ZpqQBQeFfOpGb86OJ"></div>
+            <div class="g-recaptcha" :data-sitekey="siteKey"></div>
             <button id="feedbackBtn" class="button is-primary is-medium" :class="{ 'is-loading': inSubmitProcess }">Submit</button>
           </div>
         </form>
@@ -129,9 +129,9 @@
 </template>
 
 <script>
-/* global emailjs:true */
 
 import moment from 'moment'
+import config from '../specs/config'
 
 export default {
   data() {
@@ -143,10 +143,11 @@ export default {
       inSubmitProcess: false,
       isSuccessful: false,
       hasSent: false,
+      siteKey: config.gRecaptcha.siteKey,
     }
   },
   created() {
-    emailjs.init('user_bVIXBERH3cmUAOMvLaONo')
+    this.$emailjs.init(config.emailJS.userID)
   },
   methods: {
     onSubmit() {
@@ -161,7 +162,7 @@ export default {
             message_html: this.feedback,
             date: moment().format('MMMM Do YYYY, h:mm:ss a'),
           }
-          emailjs.send('gmail', 'template_2It6pSrx', emailObject)
+          this.$emailjs.send('gmail', 'template_2It6pSrx', emailObject)
             .then(() => {
               this.hasSent = !this.hasSent
               this.inSubmitProcess = !this.inSubmitProcess

@@ -85,6 +85,8 @@
         const { records = [] } = result
         // Assume that a single postal code contains only 1 school
         this.school = records[0].school_name
+      }).catch((error) => {
+        console.log(error)
       })
     },
   }

@@ -11,6 +11,8 @@ import store from './store'
 Vue.config.productionTip = true
 Vue.use(vueSmoothScroll)
 Vue.use(VeeValidate)
+// Can be accessed by __proto__.__proto__.$emailjs
+Vue.prototype.$emailjs = emailjs
 Validator.extend('phoneNumber', {
   getMessage: field => `Field ${field} is not legitimate.`,
   // Returns a boolean value

@@ -1,12 +1,9 @@
-import { mount, shallow } from 'vue-test-utils'
 import { expect } from 'chai'
 import sinon from 'sinon'
-import _ from 'lodash'
-import Vue from 'vue'
-
 import Settings from '@/components/Settings'
 import User from '../../../src/specs/models/User'
 import * as SchoolSession from '../../../src/specs/sessions/school'
+import * as Func from '../handlers/fnc'
 
 describe('Settings.vue', () => {
   // Declare const variables
@@ -29,19 +26,6 @@ describe('Settings.vue', () => {
       },
     },
   }
-  const prepMount = (data, stubs = [], isMount = true) => {
-    let wrapper = null
-    let propsData = null
-    if (_.every(stubs, _.isObject) && stubs !== null) {
-      // Iterate through all of the stubs and resolve the associated data
-      for (let i = 0; i < stubs.length; i++) {
-        stubs[i].obj.resolves(stubs[i].data)
-      }
-    }
-    propsData = data
-    wrapper = isMount ? mount(Settings, { propsData }) : shallow(Settings, { propsData })
-    return wrapper
-  }
 
   describe('DOM elements', () => {
     let wrapper
@@ -50,8 +34,9 @@ describe('Settings.vue', () => {
     beforeEach(() => {
       addMarkerStub = sinon.stub(Settings.methods, 'addMarker')
       schoolSessionStub = sinon.stub(SchoolSession, 'default')
-      wrapper = prepMount(
-        { profile: updatedProfile },
+      wrapper = Func.default(
+        Settings,
+        { propsData: { profile: updatedProfile } },
         [
           { obj: addMarkerStub },
           { obj: schoolSessionStub, data: schoolResponse },
@@ -80,7 +65,7 @@ describe('Settings.vue', () => {
 
     it('form elements should contain registered profile information', async () => {
       expect(wrapper.vm.profile).to.be.an('object')
-      await setTimeout(() => {}, 10)
+      await wrapper.vm.$nextTick()
       expect(wrapper.vm.phoneNumber).to.equal('91123456')
       expect(wrapper.vm.address).to.equal('118998')
       expect(wrapper.vm.school).to.equal('FAIRFIELD METHODIST SCHOOL (SECONDARY)')
@@ -92,12 +77,14 @@ describe('Settings.vue', () => {
       const spy = sinon.spy(Settings.methods, 'updateProfileInformation')
       const schoolSessionStub = sinon.stub(SchoolSession, 'default')
       const addMarkerStub = sinon.stub(Settings.methods, 'addMarker')
-      const wrapper = prepMount(
-        { profile: updatedProfile },
+      const wrapper = Func.default(
+        Settings,
+        { propsData: { profile: updatedProfile } },
         [
           { obj: schoolSessionStub, data: schoolResponse },
           { obj: addMarkerStub },
         ],
+        {},
         false,
       )
       // Check for component props
@@ -111,9 +98,16 @@ describe('Settings.vue', () => {
       done()
     })
 
-    it('should trigger the onSubmit method when the save button is clicked', (done) => {
+    it('triggers the onSubmit method when the save button is clicked', (done) => {
       const spy = sinon.spy(Settings.methods, 'onSubmit')
-      const wrapper = prepMount({ profile: newProfile }, null, null, false)
+      const wrapper = Func.default(
+        Settings,
+        { propsData: { profile: newProfile } },
+        null,
+        null,
+        {},
+        false,
+      )
       // Trigger click event of submit button
       wrapper.find('button').trigger('click')
       // Check that onSubmit method is called
@@ -123,12 +117,13 @@ describe('Settings.vue', () => {
       done()
     })
 
-    it('should successfully update profile object after save button is clicked', (done) => {
+    it('should successfully update profile object after save button is clicked', async () => {
       const submitProfileHandlerStub = sinon.stub(Settings.methods, 'submitProfileHandler')
       const schoolSessionStub = sinon.stub(SchoolSession, 'default')
       const addMarkerStub = sinon.stub(Settings.methods, 'addMarker')
-      const wrapper = prepMount(
-        { profile: updatedProfile },
+      const wrapper = Func.default(
+        Settings,
+        { propsData: { profile: updatedProfile } },
         [
           { obj: submitProfileHandlerStub, data: updatedProfile },
           { obj: schoolSessionStub, data: schoolResponse },
@@ -141,13 +136,11 @@ describe('Settings.vue', () => {
       wrapper.vm.school = 'FAIRFIELD'
       // // Trigger click event of submit button
       wrapper.find('button').trigger('click')
-      Vue.nextTick(() => {
-        expect(wrapper.vm.response).to.equal('data has been updated successfully!')
-        submitProfileHandlerStub.restore()
-        schoolSessionStub.restore()
-        addMarkerStub.restore()
-        done()
-      })
+      await wrapper.vm.$nextTick()
+      expect(wrapper.vm.response).to.equal('data has been updated successfully!')
+      submitProfileHandlerStub.restore()
+      schoolSessionStub.restore()
+      addMarkerStub.restore()
     })
   })
 })
