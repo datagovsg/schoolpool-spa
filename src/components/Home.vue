@@ -90,7 +90,7 @@
           <button class="delete" v-on:click="hasSent = !hasSent"></button> {{ feedbackResponse }}
         </div>
         </transition>
-        <form @submit.prevent="onSubmit">
+        <form>
           <div class="field has-addons">
             <p class="control">
               <span class="select is-medium">
@@ -120,7 +120,7 @@
           </div>
           <div class="control">
             <div class="g-recaptcha" :data-sitekey="siteKey"></div>
-            <button id="feedbackBtn" class="button is-primary is-medium" :class="{ 'is-loading': inSubmitProcess }">Submit</button>
+            <button id="feedbackBtn" @click="onSubmit" class="button is-primary is-medium" :class="{ 'is-loading': inSubmitProcess }">{{ submitbuttonText }}</button>
           </div>
         </form>
       </div>
@@ -140,6 +140,7 @@ export default {
       email: '',
       feedback: '',
       feedbackResponse: '',
+      submitbuttonText: 'Submit',
       inSubmitProcess: false,
       isSuccessful: false,
       hasSent: false,
@@ -150,7 +151,8 @@ export default {
     this.$emailjs.init(config.emailJS.userID)
   },
   methods: {
-    onSubmit() {
+    onSubmit(e) {
+      e.preventDefault()
       this.$validator.validateAll().then((result) => {
         if (result) {
           // parameters: service_id, template_id, template_parameters
@@ -164,11 +166,11 @@ export default {
           }
           this.$emailjs.send('gmail', 'template_2It6pSrx', emailObject)
             .then(() => {
+              this.isSuccessful = true
               this.hasSent = !this.hasSent
               this.inSubmitProcess = !this.inSubmitProcess
-              this.isSuccessful = true
               this.feedbackResponse = 'Feedback has been successfully sent!'
-              document.getElementById('feedbackBtn').innerText = 'Sent'
+              this.submitbuttonText = 'Sent'
             }, (err) => {
               this.hasSent = !this.hasSent
               this.inSubmitProcess = !this.inSubmitProcess
@@ -177,8 +179,8 @@ export default {
             })
           return
         }
-        this.hasSent = !this.hasSent
         this.feedbackResponse = 'Please ensure that all input fields are filled.'
+        this.hasSent = !this.hasSent
       })
     },
   },

@@ -52,18 +52,16 @@ describe('Settings.vue', () => {
       expect(typeof Settings.created).to.equal('function')
     })
 
-    it('has a root element with class .columns', (done) => {
+    it('has a root element with class .columns', () => {
       expect(wrapper.is('.columns')).to.equal(true)
-      done()
     })
 
-    it('should contain 4 active form input fields', (done) => {
+    it('should contain 4 active form input fields', () => {
       const formElements = wrapper.findAll('form div.field input')
       expect(formElements.length).to.equal(4)
-      done()
     })
 
-    it('form elements should contain registered profile information', async () => {
+    it('populates form with registered profile information', async () => {
       expect(wrapper.vm.profile).to.be.an('object')
       await wrapper.vm.$nextTick()
       expect(wrapper.vm.phoneNumber).to.equal('91123456')
