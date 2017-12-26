@@ -1,14 +1,34 @@
-// import { mount } from 'vue-test-utils'
-// import AppNav from '@/components/AppNav'
-// import Vue from 'vue'
-// import Vuex from 'vuex'
+import { createLocalVue } from 'vue-test-utils'
+import AppNav from '@/components/AppNav'
+import * as Func from '../handlers/fnc'
 
-// Vue.use(Vuex)
+describe('AppNav.vue', () => {
+  describe('success', () => {
+    let wrapper
+    let computedStub
+    let createdStub
+    describe('Check Login statuses', () => {
+      const localVue = createLocalVue()
+      computedStub = sinon.stub(AppNav, 'computed')
+      createdStub = sinon.stub(AppNav, 'created')
+      beforeEach(() => {
+        wrapper = Func.default(
+          AppNav,
+          { localVue },
+          null,
+          false,
+        )
+      })
+      afterEach(() => {
+        computedStub.restore()
+        createdStub.restore()
+      })
+      it('should show a login button because we are not logged in', () => {
+        const loginBtn = wrapper.find('.button.is-primary')
+        const buttonContent = loginBtn.children
+        expect(buttonContent[1]).innerHTML.to.equal('Login')
+      })
 
-// describe('AppNav.vue', () => {
-//   it('renders a button with "login" text with isLoggedIn Getter value is false', () => {
-//     const wrapper = mount(AppNav)
-//     const button = wrapper.find('button')[0]
-//     expect(button.text()).to.equal('Login')
-//   })
-// })
+    })
+  })
+})
