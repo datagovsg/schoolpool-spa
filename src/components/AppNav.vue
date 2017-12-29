@@ -67,10 +67,10 @@
         this.$router.replace('control-panel')
       },
       login() {
-        this.auth.login()
+        this.$auth.login()
       },
       logout() {
-        this.auth.logout()
+        this.$auth.logout()
         this.disabled = this.$route.name === 'Home'
       },
     },
@@ -90,10 +90,6 @@
       },
     },
     created() {
-      const {
-        auth = {},
-      } = this.$parent
-      this.auth = auth
       this.disabled = this.$route.name === 'Home'
       // auth.authNotifier.on('authChange', (authState) => {
       //   this.authenticated = authState.authenticated

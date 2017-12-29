@@ -1,5 +1,7 @@
 import { expect } from 'chai'
 import sinon from 'sinon'
+// import axios from 'axios'
+// import MockAdapter from 'axios-mock-adapter'
 import Settings from '@/components/Settings'
 import User from '../../../src/specs/models/User'
 import * as SchoolSession from '../../../src/specs/sessions/school'
@@ -26,6 +28,23 @@ describe('Settings.vue', () => {
       },
     },
   }
+
+  // // This sets the mock adapter on the default instance
+  // const mock = new MockAdapter(axios)
+  // // Mock any GET request to /users
+  // // arguments for reply are (status, data, headers)
+  // mock.onGet(/^(https:\/\/maps.googleapis.com\/maps\/api\/geocode\/json\?address=){1}\d{6}(&key=).+/g).reply(200, {
+  //   results: [
+  //     {
+  //       geometry: {
+  //         location: {
+  //           lat: 1.28671,
+  //           lng: 103.790986,
+  //         },
+  //       },
+  //     },
+  //   ],
+  // })
 
   describe('DOM elements', () => {
     let wrapper
@@ -103,7 +122,6 @@ describe('Settings.vue', () => {
         { propsData: { profile: newProfile } },
         null,
         null,
-        {},
         false,
       )
       // Trigger click event of submit button

@@ -26,6 +26,7 @@ describe('Home.vue', () => {
         false,
       )
     })
+
     it('has set the correct default data', () => {
       expect(typeof Home.data).to.equal('function')
       const defaultData = Home.data()
@@ -146,6 +147,7 @@ describe('Home.vue', () => {
       await wrapper.vm.$nextTick()
       await wrapper.vm.$nextTick()
       expect(wrapper.vm.feedbackResponse).to.equal('Please ensure that all input fields are filled.')
+      validateAllSpy.restore()
     })
   })
 })

@@ -9,7 +9,7 @@
   export default {
     name: 'callback',
     data() {
-      this.$parent.auth.handleAuthentication()
+      this.$auth.handleAuthentication()
       return {}
     },
   }

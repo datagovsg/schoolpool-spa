@@ -65,7 +65,7 @@
     },
     methods: {
       logout() {
-        this.auth.logout()
+        this.$auth.logout()
       },
       swapComponent(component) {
         this.$router.push({ path: component.name.toLowerCase() })
@@ -81,7 +81,10 @@
     },
     data() {
       return {
-        componentsArray: [{ name: 'Dashboard', icon: 'fa fa-bar-chart fa-lg component-icon' }, { name: 'Settings', icon: 'fa fa-cog fa-lg component-icon' }],
+        componentsArray: [
+          { name: 'Dashboard', icon: 'fa fa-bar-chart fa-lg component-icon' },
+          { name: 'Settings', icon: 'fa fa-cog fa-lg component-icon' },
+        ],
         profileImage: '',
         isActive: false,
         profile: null,
@@ -91,20 +94,17 @@
       }
     },
     async created() {
-      const {
-        auth = {},
-      } = this.$parent
-      this.auth = auth
+      this.$router.push({ path: this.currentComponent.toLowerCase() })
       let jwtToken = null
       try {
         jwtToken = localStorage.getItem('id_token')
       } catch (error) {
         console.log(error)
-        return
+        // return
       }
       // Authenticate with server to ensure that user exist
       await UserSession.authenticate(jwtToken)
-        .then(async (response) => {
+        .then((response) => {
           // JSON responses are automatically parsed.
           const { user = {} } = response.data
           this.profile = user
@@ -114,6 +114,7 @@
             .then((res) => {
               this.profileImage = res.data.picture
             }).catch((err) => {
+              console.log(err)
               throw err
               // TODO: Handle error expection with error message hero
             })

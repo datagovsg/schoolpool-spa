@@ -166,14 +166,18 @@
 
           if (updatedProfile !== null) {
             this.response = 'data has been updated successfully!'
+            this.isSuccessful = true
             this.profileChanged(updatedProfile)
           } else {
-            this.response = this.errors.join()
+            this.response = this.errorBag.join()
+            this.isSuccessful = false
           }
-          this.hasChanged = !this.hasChanged
           this.inSubmitProcess = !this.inSubmitProcess
         } else {
           this.response = 'Input fields are empty. Please fill them up and try again.'
+          this.isSuccessful = false
+        }
+        if (this.hasChanged === false) {
           this.hasChanged = !this.hasChanged
         }
       },
@@ -185,14 +189,14 @@
           await UserSession.register(user, jwtToken).then((response) => {
             profile = this.updateProfileInformation(response.data.user)
           }).catch((error) => {
-            this.errors = error.response.data.errorMessage
+            this.errorBag = error.response.data.errorMessage
           })
         } else {
           // Perform a PUT API update request
           await UserSession.update(user, jwtToken).then((response) => {
             profile = this.updateProfileInformation(response.data.user)
           }).catch((error) => {
-            this.errors = error.response.data.errorMessage
+            this.errorBag = error.response.data.errorMessage
           })
         }
         return profile
@@ -262,7 +266,10 @@
             this.school = records[0].school_name
             this.phoneNumber = updatedProfile.phoneNumber
             this.address = updatedProfile.address
-            this.location = updatedProfile.latlong.coordinates
+            this.location = {
+              lat: updatedProfile.latlong.coordinates[0],
+              lng: updatedProfile.latlong.coordinates[1],
+            }
             this.addMarker('school', records[0].postal_code)
             return updatedProfile
           }).catch((err) => {
@@ -309,11 +316,13 @@
         location: {},
         schools: [],
         markers: [],
+        errorBag: [],
         phoneNumber: null,
         selectedSchool: null,
         userExist: false,
         hasChanged: false,
         inSubmitProcess: false,
+        isSuccessful: false,
         center: { lat: 1.3521, lng: 103.8198 },
         zoom: 7,
       }

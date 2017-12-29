@@ -29,7 +29,8 @@ describe('Dashboard.vue', () => {
         let wrapper
         before(() => {
           wrapper = Func.default(
-            Dashboard, { propsData: { profile } },
+            Dashboard,
+            { propsData: { profile } },
             null,
             false,
           )

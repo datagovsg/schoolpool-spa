@@ -61,6 +61,7 @@ import moment from 'moment'
 import Partner from './Partner'
 
 export default {
+  name: 'Dashboard',
   props: {
     profile: {
       type: Object,
