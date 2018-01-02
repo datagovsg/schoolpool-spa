@@ -7,7 +7,6 @@ const prepMount = (component, data = {}, stubs = [], isMount = true, isReturns =
     // Iterate through all of the stubs and resolve the associated data
     for (let i = 0; i < stubs.length; i++) {
       if (isReturns) {
-        console.log('is returns')
         stubs[i].obj.returns(stubs[i].data)
       } else {
         stubs[i].obj.resolves(stubs[i].data)

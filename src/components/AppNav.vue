@@ -85,20 +85,9 @@
       isLoggedIn() {
         return this.$store.getters.isLoggedIn
       },
-      profile() {
-        return JSON.parse(localStorage.getItem('profile'))
-      },
     },
     created() {
       this.disabled = this.$route.name === 'Home'
-      // auth.authNotifier.on('authChange', (authState) => {
-      //   this.authenticated = authState.authenticated
-      // })
-      try {
-        // this.authenticated = this.auth.authenticated
-      } catch (err) {
-        console.log(err)
-      }
     },
   }
 

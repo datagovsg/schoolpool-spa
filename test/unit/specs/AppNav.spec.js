@@ -1,34 +1,163 @@
 import { createLocalVue } from 'vue-test-utils'
+import Vuex from 'vuex'
+import Router from 'vue-router'
 import AppNav from '@/components/AppNav'
+import Home from '@/components/Home'
+import ControlPanel from '@/components/ControlPanel'
+import Dashboard from '@/components/Dashboard'
+import Settings from '@/components/Settings'
 import * as Func from '../handlers/fnc'
+import auth from '../../../src/utils/auth'
+
+const localVue = createLocalVue()
+localVue.use(Vuex)
 
 describe('AppNav.vue', () => {
-  describe('success', () => {
+  const getters = {
+    isLoggedIn: () => false,
+  }
+  describe('DOM Elements', () => {
     let wrapper
-    let computedStub
     let createdStub
-    describe('Check Login statuses', () => {
-      const localVue = createLocalVue()
-      computedStub = sinon.stub(AppNav, 'computed')
+    let store
+    beforeEach(() => {
+      const newRouter = new Router({
+        routes: [
+          {
+            path: '/home',
+            name: 'home',
+            component: Home,
+          },
+        ],
+      })
       createdStub = sinon.stub(AppNav, 'created')
-      beforeEach(() => {
-        wrapper = Func.default(
-          AppNav,
-          { localVue },
-          null,
-          false,
-        )
-      })
-      afterEach(() => {
-        computedStub.restore()
-        createdStub.restore()
-      })
-      it('should show a login button because we are not logged in', () => {
-        const loginBtn = wrapper.find('.button.is-primary')
-        const buttonContent = loginBtn.children
-        expect(buttonContent[1]).innerHTML.to.equal('Login')
-      })
-
+      store = new Vuex.Store({ getters })
+      newRouter.replace('home')
+      wrapper = Func.default(
+        AppNav,
+        {
+          localVue,
+          store,
+          router: newRouter,
+          mocks: {
+            $auth: auth,
+          },
+        },
+        null,
+        false,
+      )
     })
+    afterEach(() => {
+      createdStub.restore()
+    })
+
+    it('displays a login button', () => {
+      const loginButton = wrapper.find('.button')
+      expect(loginButton.element.textContent).to.contain('Login')
+    })
+
+    it('displays a logout and dashboard button', async () => {
+      store.hotUpdate({
+        getters: {
+          isLoggedIn: () => true,
+        },
+      })
+      await wrapper.vm.$nextTick()
+      const wrapperButtons = wrapper.findAll('button')
+      expect(wrapperButtons.length).to.equal(2)
+    })
+  })
+
+  describe('methods', () => {
+    const store = new Vuex.Store({
+      getters: {
+        isLoggedIn: () => false,
+      },
+    })
+    const newRouter = new Router({
+      routes: [
+        {
+          path: '/home',
+          name: 'home',
+          component: Home,
+        },
+        {
+          path: '/control-panel',
+          component: ControlPanel,
+          children: [
+            { path: '', name: 'ControlPanel', redirect: '/control-panel/dashboard' },
+            { path: 'dashboard', name: 'Dashboard', component: Dashboard },
+            { path: 'settings', name: 'Settings', component: Settings },
+          ],
+        },
+      ],
+    })
+    // it('calls login function in Auth class when login button is triggered', async () => {
+    //   const loginStub = sinon.stub(auth, 'login')
+    //   const auth0LockSpy = sinon.spy(auth.lock, 'show')
+    //   const wrapper = Func.default(
+    //     AppNav,
+    //     {
+    //       localVue,
+    //       store,
+    //       router: newRouter,
+    //       mocks: {
+    //         $auth: auth,
+    //       },
+    //     },
+    //     [{ obj: loginStub, data: null }],
+    //     false,
+    //   )
+    //   const loginButton = wrapper.find('.button')
+    //   expect(loginButton.element.textContent).to.contain('Login')
+    //   loginButton.trigger('click')
+    //   expect(auth0LockSpy.calledOnce).to.equal(true)
+    //   auth0LockSpy.restore()
+    // })
+    it('redirects to the dashboard view when the \'Dashboard\' button is clicked', () => {
+      store.hotUpdate({
+        getters: {
+          isLoggedIn: () => true,
+        },
+      })
+      const wrapper = Func.default(
+        AppNav,
+        {
+          localVue,
+          store,
+          router: newRouter,
+          mocks: {
+            $auth: auth,
+          },
+        },
+        null,
+        false,
+      )
+      const dashboardButton = wrapper.findAll('button').at(0)
+      expect(dashboardButton.element.textContent).to.contain('Dashboard')
+      dashboardButton.trigger('click')
+      expect(wrapper.vm.$route.name).to.equal('Dashboard')
+    })
+
+    // it('logs out a user when the \'Logout\' button is clicked', async () => {
+    //   sinon.stub(auth, 'logout')
+    //   const wrapper = Func.default(
+    //     AppNav,
+    //     {
+    //       localVue,
+    //       store,
+    //       router: newRouter,
+    //       mocks: {
+    //         $auth: auth,
+    //       },
+    //     },
+    //     null,
+    //     false,
+    //   )
+    //   const logoutButton = wrapper.findAll('button').at(1)
+    //   expect(logoutButton.element.textContent).to.contain('Logout')
+    //   logoutButton.trigger('click')
+    //   await wrapper.vm.$nextTick()
+    // })
   })
 })
