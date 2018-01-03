@@ -92,28 +92,29 @@ describe('AppNav.vue', () => {
         },
       ],
     })
-    // it('calls login function in Auth class when login button is triggered', async () => {
-    //   const loginStub = sinon.stub(auth, 'login')
-    //   const auth0LockSpy = sinon.spy(auth.lock, 'show')
-    //   const wrapper = Func.default(
-    //     AppNav,
-    //     {
-    //       localVue,
-    //       store,
-    //       router: newRouter,
-    //       mocks: {
-    //         $auth: auth,
-    //       },
-    //     },
-    //     [{ obj: loginStub, data: null }],
-    //     false,
-    //   )
-    //   const loginButton = wrapper.find('.button')
-    //   expect(loginButton.element.textContent).to.contain('Login')
-    //   loginButton.trigger('click')
-    //   expect(auth0LockSpy.calledOnce).to.equal(true)
-    //   auth0LockSpy.restore()
-    // })
+    it('calls login function in Auth class when login button is triggered', async () => {
+      const loginStub = sinon.stub()
+      const wrapper = Func.default(
+        AppNav,
+        {
+          localVue,
+          store,
+          router: newRouter,
+          mocks: {
+            $auth: auth,
+          },
+          methods: {
+            login: loginStub,
+          },
+        },
+        null,
+        false,
+      )
+      const loginButton = wrapper.find('.button')
+      expect(loginButton.element.textContent).to.contain('Login')
+      loginButton.trigger('click')
+      expect(loginStub.calledOnce).to.equal(true)
+    })
     it('redirects to the dashboard view when the \'Dashboard\' button is clicked', () => {
       store.hotUpdate({
         getters: {
@@ -139,25 +140,29 @@ describe('AppNav.vue', () => {
       expect(wrapper.vm.$route.name).to.equal('Dashboard')
     })
 
-    // it('logs out a user when the \'Logout\' button is clicked', async () => {
-    //   sinon.stub(auth, 'logout')
-    //   const wrapper = Func.default(
-    //     AppNav,
-    //     {
-    //       localVue,
-    //       store,
-    //       router: newRouter,
-    //       mocks: {
-    //         $auth: auth,
-    //       },
-    //     },
-    //     null,
-    //     false,
-    //   )
-    //   const logoutButton = wrapper.findAll('button').at(1)
-    //   expect(logoutButton.element.textContent).to.contain('Logout')
-    //   logoutButton.trigger('click')
-    //   await wrapper.vm.$nextTick()
-    // })
+    it('logs out a user when the \'Logout\' button is clicked', async () => {
+      const logoutStub = sinon.stub()
+      const wrapper = Func.default(
+        AppNav,
+        {
+          localVue,
+          store,
+          router: newRouter,
+          mocks: {
+            $auth: auth,
+          },
+          methods: {
+            logout: logoutStub,
+          },
+        },
+        null,
+        false,
+      )
+      const logoutButton = wrapper.findAll('button').at(1)
+      expect(logoutButton.element.textContent).to.contain('Logout')
+      logoutButton.trigger('click')
+      await wrapper.vm.$nextTick()
+      expect(logoutStub.calledOnce).to.equal(true)
+    })
   })
 })
