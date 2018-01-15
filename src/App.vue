@@ -9,20 +9,12 @@
 <script>
 import AppNav from '../src/components/AppNav'
 import AppFooter from '../src/components/AppFooter'
-import { Auth } from './specs/models/Auth'
-
-const auth = new Auth()
 
 export default {
   name: 'app',
   components: {
     AppNav,
     AppFooter,
-  },
-  data() {
-    return {
-      auth,
-    }
   },
   computed: {
     isActive() {

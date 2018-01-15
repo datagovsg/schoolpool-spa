@@ -21,15 +21,15 @@
         <div class="card events-card">
           <header class="card-header">
             <p class="card-header-title">
-              Schedules
+              Schedules - Coming soon
             </p>
-            <a href="#" class="card-header-icon" aria-label="more options">
+            <!-- <a href="#" class="card-header-icon" aria-label="more options">
               <span class="icon">
                 <i class="fa fa-angle-down" aria-hidden="true"></i>
               </span>
-            </a>
+            </a> -->
           </header>
-          <div class="card-table">
+          <!-- <div class="card-table">
             <div class="content">
               <table class="table is-fullwidth is-striped">
                 <tbody>
@@ -37,15 +37,15 @@
                     <td width="5%">
                       <i class="fa fa-bell-o"></i>
                     </td>
-                    <td>Fetch John Smith's children to <strong>Anderson Secondary School</strong></td>
+                    <td></td>
                   </tr>
                 </tbody>
               </table>
             </div>
-          </div>
-          <footer class="card-footer">
+          </div> -->
+          <!-- <footer class="card-footer">
             <a href="#" class="card-footer-item">View All</a>
-          </footer>
+          </footer> -->
         </div>
       </div>
       <div v-if="pairedProfile" class="column is-6">
@@ -57,9 +57,11 @@
 
 <script>
 import moment from 'moment'
+
 import Partner from './Partner'
 
 export default {
+  name: 'Dashboard',
   props: {
     profile: {
       type: Object,
@@ -77,9 +79,6 @@ export default {
     currentDate() {
       return moment().format('MMMM Do YYYY, h:mm:ss a')
     },
-  },
-  data() {
-    return {}
   },
 }
 </script>

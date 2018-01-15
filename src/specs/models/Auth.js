@@ -1,6 +1,6 @@
 import Auth0Lock from 'auth0-lock'
 import router from '../../router/index'
-import Store from '../../store/index'
+import store from '../../store/index'
 import Config from '../config'
 
 export class Auth {
@@ -42,7 +42,7 @@ export class Auth {
           // Handle error
           return
         }
-        Store.dispatch('login', profile).then(async () => {
+        store.dispatch('login', profile).then(async () => {
           await this.setSession(authResult)
           router.replace('control-panel')
         })
@@ -56,14 +56,14 @@ export class Auth {
     localStorage.setItem('access_token', authResult.accessToken)
     localStorage.setItem('id_token', authResult.idToken)
     localStorage.setItem('expires_at', expiresAt)
-    console.log(this)
+    this.authResult = authResult
   }
 
   logout() {
-    console.log(this)
-    Store.dispatch('logout')
+    store.dispatch('logout')
     // navigate to the home route
     router.replace('home')
+    this.authResult = null
   }
 
   static async isAuthenticated() {
@@ -75,7 +75,7 @@ export class Auth {
 
 // Function to authenticate a user before rendering a component
 export function requireAuth(to, from, next) {
-  if (!Store.getters.isLoggedIn) {
+  if (!store.getters.isLoggedIn) {
     next({
       path: '/',
     })

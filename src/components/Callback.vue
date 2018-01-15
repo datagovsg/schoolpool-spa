@@ -9,7 +9,7 @@
   export default {
     name: 'callback',
     data() {
-      this.$parent.auth.handleAuthentication()
+      this.$auth.handleAuthentication()
       return {}
     },
   }
@@ -17,7 +17,6 @@
 
 <style lang="sass" scoped>
   .spinner 
-    position: absolute
     display: flex
     justify-content: center
     height: 100vh

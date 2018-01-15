@@ -29,24 +29,23 @@ export default new Router({
       name: 'Callback',
       component: Callback,
     },
+    // No name for parent component due to default child component. Reference: https://github.com/vuejs/vue-router/issues/777
     {
       path: '/control-panel',
-      name: 'ControlPanel',
       component: ControlPanel,
       beforeEnter: requireAuth,
       children: [
-
         // ControlPanel will be rendered inside ControlPanel's <router-view>
         // when /control-panel is matched
-        { path: '', redirect: '/control-panel/dashboard' },
+        { path: '', name: 'ControlPanel', redirect: '/control-panel/dashboard' },
 
         // ControlPanel will be rendered inside ControlPanel's <router-view>
         // when /control-panel/dashboard is matched
-        { path: 'dashboard', component: Dashboard },
+        { path: 'dashboard', name: 'Dashboard', component: Dashboard },
 
         // ControlPanel will be rendered inside ControlPanel's <router-view>
         // when /control-panel/settings is matched
-        { path: 'settings', component: Settings },
+        { path: 'settings', name: 'Settings', component: Settings },
       ],
     },
     {

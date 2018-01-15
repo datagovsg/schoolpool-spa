@@ -1,5 +1,6 @@
 <template>
   <div class="section admin-controller full-height">
+    <loading v-if="!profile"></loading>
     <div class="container">
       <div class="columns is-mobile">
         <div id="nav" class="side-nav column is-2">
@@ -29,19 +30,17 @@
             <div class="column is-12">
               <!-- TODO: Add data binding to do conditional rendering of warning -->
               <div class="notification is-warning">
-                <button class="delete"></button> Please navigate to
-                <a>Profile Settings</a> to update your personal information
+                <button class="delete" v-on:click="isActive = !isActive"></button> Please navigate to
+                <a href="/control-panel/settings">Profile Settings</a> to update your personal information
               </div>
             </div>
           </div>
           <!-- Conditional rendering of component. Reference: http://jsbin.com/miwuduliyu/edit?html,js,console,output -->
-          <router-view v-if="profile && pairedProfile"
+          <router-view v-if="profile"
             :profile="profile"
             :pairedProfile="pairedProfile"
             @profileChanged="newProperties">
           </router-view>
-          <!-- TODO: Add loading page -->
-          <div v-else>Loading...</div>
         </div>
       </div>
     </div>
@@ -49,19 +48,24 @@
 </template>
 
 <script>
+  import _ from 'lodash'
+
+  import Loading from './Loading'
   import Dashboard from './Dashboard'
   import Settings from './Settings'
+
   import * as UserSession from '../specs/sessions/user'
   import * as Auth0Session from '../specs/sessions/auth0'
 
   export default {
     components: {
+      Loading,
       Dashboard,
       Settings,
     },
     methods: {
       logout() {
-        this.auth.logout()
+        this.$auth.logout()
       },
       swapComponent(component) {
         this.$router.push({ path: component.name.toLowerCase() })
@@ -77,29 +81,30 @@
     },
     data() {
       return {
-        componentsArray: [{ name: 'Dashboard', icon: 'fa fa-bar-chart fa-lg component-icon' }, { name: 'Settings', icon: 'fa fa-cog fa-lg component-icon' }],
+        componentsArray: [
+          { name: 'Dashboard', icon: 'fa fa-bar-chart fa-lg component-icon' },
+          { name: 'Settings', icon: 'fa fa-cog fa-lg component-icon' },
+        ],
         profileImage: '',
         isActive: false,
         profile: null,
         pairedProfile: null,
-        currentComponent: this.$route.path.substr(this.$route.path.lastIndexOf('/') + 1),
+        isLoading: true,
+        currentComponent: this.$route.name,
       }
     },
     async created() {
-      const {
-        auth = {},
-      } = this.$parent
-      this.auth = auth
+      this.$router.push({ path: this.currentComponent.toLowerCase() })
       let jwtToken = null
       try {
         jwtToken = localStorage.getItem('id_token')
       } catch (error) {
         console.log(error)
-        return
+        // return
       }
       // Authenticate with server to ensure that user exist
       await UserSession.authenticate(jwtToken)
-        .then(async (response) => {
+        .then((response) => {
           // JSON responses are automatically parsed.
           const { user = {} } = response.data
           this.profile = user
@@ -108,19 +113,28 @@
           Auth0Session.default(sub, jwtToken)
             .then((res) => {
               this.profileImage = res.data.picture
+            }).catch((err) => {
+              console.log(err)
+              throw err
+              // TODO: Handle error expection with error message hero
             })
-          // Get paired user profile basic information
-          UserSession.information(this.profile.pairedId, jwtToken)
-            .then((res) => {
-              this.pairedProfile = res.data.user
-            })
+          if (!_.isEmpty(this.profile.pairedId)) {
+            // Get paired user profile basic information
+            UserSession.information(this.profile.pairedId, jwtToken)
+              .then((res) => {
+                this.pairedProfile = res.data.user
+              }).catch((err) => {
+                throw err
+              // TODO: Handle error expection with error message hero
+              })
+          }
         })
         .catch((e) => {
           // User does not exist in the database
           if (e.response.status === 401) {
             try {
               // Set this.profile to default value
-              this.profile = JSON.parse(jwtToken)
+              this.profile = JSON.parse(localStorage.getItem('profile'))
               this.profileImage = this.profile.picture
               this.isActive = !this.isActive
             } catch (error) {

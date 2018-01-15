@@ -17,14 +17,14 @@
 
       <div class="navbar-end">
         <div class="navbar-item">
-          <a class="navbar-item" href="#about">
+          <a class="navbar-item" href="#about" v-smooth-scroll>
             About
           </a>
-          <a class="navbar-item" href="#services">
-            Services
+          <a class="navbar-item" href="#how"  v-smooth-scroll>
+            How
           </a>
-          <a class="navbar-item" href="#contact">
-            Contact
+          <a class="navbar-item" href="#contact"  v-smooth-scroll>
+            Feedback
           </a>
           <div v-if="!isLoggedIn">
             <button @click="login()" :disabled="!disabled" class="button is-primary">
@@ -35,6 +35,12 @@
             </button>
           </div>
           <div v-if="isLoggedIn">
+            <button @click="dashboardLinkHandler()" class="button is-primary is-outlined">
+              <span class="icon">
+                <i class="fa fa-sign-out" aria-hidden="true"></i>
+              </span>
+              <span>Dashboard</span>
+            </button>
             <button @click="logout()" class="button is-info is-outlined">
               <span class="icon">
                 <i class="fa fa-sign-out" aria-hidden="true"></i>
@@ -57,11 +63,14 @@
       closeNav() {
         this.isActive = false
       },
+      dashboardLinkHandler() {
+        this.$router.replace('control-panel')
+      },
       login() {
-        this.auth.login()
+        this.$auth.login()
       },
       logout() {
-        this.auth.logout()
+        this.$auth.logout()
         this.disabled = this.$route.name === 'Home'
       },
     },
@@ -76,24 +85,9 @@
       isLoggedIn() {
         return this.$store.getters.isLoggedIn
       },
-      profile() {
-        return JSON.parse(localStorage.getItem('profile'))
-      },
     },
     created() {
-      const {
-        auth = {},
-      } = this.$parent
-      this.auth = auth
       this.disabled = this.$route.name === 'Home'
-      // auth.authNotifier.on('authChange', (authState) => {
-      //   this.authenticated = authState.authenticated
-      // })
-      try {
-        // this.authenticated = this.auth.authenticated
-      } catch (err) {
-        console.log(err)
-      }
     },
   }
 
