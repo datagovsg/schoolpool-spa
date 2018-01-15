@@ -65,17 +65,16 @@
           </ol>
           <center>This version of the Privacy Policy is dated 8 November 2017.</center>
           <center>
-            <h2>
+            <p class="subtitle">
               <b>ANNEX</b>
-            </h2>
+            </p>
           </center>
           <ol type="i">
             <li>
-              <b>Name of Service:</b> SchoolPool</li>
+              <b>Name of Service:</b> Schoolpool</li>
             <li>
               <b>Types of data requested</b>
               <ol type="a">
-                <li>Payment details such as credit card information;</li>
                 <li>Personal contact details;</li>
                 <li>Geolocation information.</li>
               </ol>
@@ -106,6 +105,15 @@ export default {
   .modal
     z-index: 40
     color: #000000
+
+  .subtitle
+    margin-top: 24px !important
+  
+  .modal-card-body,
+    padding-left: 30px !important
+    
+  ol li,
+    padding-left: 10px !important 
 
 </style>
 
