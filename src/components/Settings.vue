@@ -189,7 +189,11 @@
           await UserSession.register(user, jwtToken).then((response) => {
             profile = this.updateProfileInformation(response.data.user)
           }).catch((error) => {
-            this.errorBag = error.response.data.errorMessage
+            if (error.response.data instanceof Array) {
+              this.errorBag = error.response.data
+            } else {
+              this.errorBag = [error.response.data.errorMessage]
+            }
           })
         } else {
           // Perform a PUT API update request
