@@ -136,7 +136,7 @@
       async onSubmit(e) {
         e.preventDefault()
         // Check if input fields are empty
-        if (this.address !== undefined && this.phoneNumber !== null && this.school.trim() !== '') {
+        if (this.address !== '' && this.phoneNumber !== null && this.school.trim() !== '') {
           this.inSubmitProcess = !this.inSubmitProcess
           let jwtToken = null
           let updatedProfile = null
@@ -174,7 +174,14 @@
           }
           this.inSubmitProcess = !this.inSubmitProcess
         } else {
-          this.response = 'Input fields are empty. Please fill them up and try again.'
+          const errorMessage = []
+          if (this.address.length !== 6) {
+            errorMessage.push('Invalid postal code')
+          }
+          if (this.address === '' || this.school.trim() !== '') {
+            errorMessage.push('Input fields are empty. Please fill them up and try again')
+          }
+          this.response = errorMessage.join(' | ')
           this.isSuccessful = false
         }
         if (this.hasChanged === false) {
