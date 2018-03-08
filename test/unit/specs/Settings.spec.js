@@ -128,7 +128,7 @@ describe('Settings.vue', () => {
       wrapper.find('button').trigger('click')
       // Check that onSubmit method is called
       expect(spy.calledOnce).to.equal(true)
-      expect(wrapper.vm.response).to.contain('Input fields are empty. Please fill them up and try again.')
+      expect(wrapper.vm.response).to.contain('Input fields are empty. Please fill them up and try again')
       spy.restore()
       done()
     })
